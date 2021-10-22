@@ -1,0 +1,23 @@
+.card-container {
+    flex: 1;
+    padding: 8px;
+}
+
+.card {
+    padding: 8px;
+    text-align: center;
+}
+
+.card-title {
+    padding: 0px;
+    margin: 0px;
+    font-size: medium;
+}
+
+.card-value {
+    padding: 0px;
+    margin: 0px;
+    font-size: x-large;
+    font-weight: 600;
+    color: #587EFB;
+}
