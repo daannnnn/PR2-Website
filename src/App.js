@@ -45,7 +45,7 @@ class App extends React.Component {
             .then((userCredential) => {
                 this.unsubscribe = onValue(this.valuesRef, (snapshot) => {
                     this.setState({
-                        last_update_time: dateFormat(Date(snapshot.child("date").val()), 'h:MM:ss TT'),
+                        last_update_time: dateFormat(new Date(snapshot.child("date").val()), 'h:MM:ss TT'),
                         humidity: snapshot.child("air_humidity").val() + '%',
                         air_temp: snapshot.child("air_temp").val() + '°C',
                         soil_temp: snapshot.child("soil_temp").val() + '°C',
