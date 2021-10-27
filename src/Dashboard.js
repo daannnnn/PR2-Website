@@ -22,7 +22,6 @@ function Dashboard() {
 
     useEffect(() => {
         let unsubscribeCurrentData = onValue(ref(db, 'a'), (snapshot) => {
-            console.log('test');
             setLastUpdateTime(dateFormat(new Date(snapshot.child("c").val()), 'h:MM:ss TT'));
             setHumidity(snapshot.child("e").val()/100 + '%');
             setAirTemperature(snapshot.child("f").val()/10 + '°C');
@@ -59,7 +58,7 @@ function Dashboard() {
             unsubscribeCurrentData();
             unsubscribePastData();
         }
-    })
+    }, [])
 
     useEffect(() => {
         if (loading) return;
