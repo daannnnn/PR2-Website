@@ -1,0 +1,50 @@
+.box {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+.box .row.header {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+}
+
+.box .row.content {
+    flex: 1 1 auto;
+}
+
+.realtime-card {
+    display: flex;
+    flex-flow: row;
+    margin-left: 24px;
+    margin-right: 24px;
+}
+
+.title {
+    margin: 24px;
+}
+
+#last-update-time {
+    margin: 0px 24px 0px 24px;
+    padding: 0px;
+    color: #A2A2A2;
+}
+
+#past-data {
+    font-weight: lighter;
+    margin: 24px 24px 8px;
+}
+
+.past-data-list {
+    margin: 0px;
+    padding: 0px 24px;
+}
+
+ul {
+    list-style-type: none;
+}
+
+li {
+    margin-bottom: 8px;
+}
