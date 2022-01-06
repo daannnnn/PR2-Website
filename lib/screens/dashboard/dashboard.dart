@@ -64,13 +64,17 @@ class _DashboardState extends State<Dashboard> {
 
     _createNotificationChannel('1234', 'Channel');
 
-    if (Platform.isAndroid) {
-      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-        showNotification(generateNewId(), message);
-      });
-      FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
-        print(newToken);
-      });
+    try {
+      if (Platform.isAndroid) {
+        FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+          showNotification(generateNewId(), message);
+        });
+        FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
+          print(newToken);
+        });
+      }
+    } catch (e) {
+      print(e);
     }
   }
 
