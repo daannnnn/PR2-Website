@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "650878921562",
-    "firebase_url": "https://arduino-test-d1dc0-default-rtdb.asia-southeast1.firebasedatabase.app",
-    "project_id": "arduino-test-d1dc0",
-    "storage_bucket": "arduino-test-d1dc0.appspot.com"
+    "project_number": "478439277291",
+    "firebase_url": "https://tech-fro-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "tech-fro",
+    "storage_bucket": "tech-fro.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:650878921562:android:e7377c6d668f123c3fa163",
+        "mobilesdk_app_id": "1:478439277291:android:0062d1a3fe84d67c7af4ae",
         "android_client_info": {
-          "package_name": "com.example.pr2"
+          "package_name": "com.bulakin3.techfro"
         }
       },
       "oauth_client": [
         {
-          "client_id": "650878921562-s81vuofv4huk5ltmbinnqe97vk700a93.apps.googleusercontent.com",
+          "client_id": "478439277291-gloak9o5rk6dekgtgav0picpli9jf5q7.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBYJsy-OCH3sC13ByQuWkUbIao1CAdfCuc"
+          "current_key": "AIzaSyARbLRuK9Wa2fUOcQ6Svo_MDzilHPyVWJU"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "650878921562-s81vuofv4huk5ltmbinnqe97vk700a93.apps.googleusercontent.com",
+              "client_id": "478439277291-gloak9o5rk6dekgtgav0picpli9jf5q7.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

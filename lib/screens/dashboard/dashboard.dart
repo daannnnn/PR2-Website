@@ -1,11 +1,16 @@
 import 'dart:io';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:intl/intl.dart';
+import 'package:pr2/constants.dart';
 import 'package:pr2/models/current.dart';
 import 'package:pr2/models/current_stream_publisher.dart';
 import 'package:pr2/screens/past_data/past_data.dart';
 import 'package:pr2/services/auth_service.dart';
+import '../../notification.dart';
 import 'past_data_summary.dart';
 import 'realtime_data.dart';
 
@@ -25,6 +30,8 @@ class _DashboardState extends State<Dashboard> {
   bool isScrolledToTop = true;
 
   Stream<Current>? currentStream;
+
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   @override
   void initState() {
@@ -48,6 +55,23 @@ class _DashboardState extends State<Dashboard> {
         }
       }
     });
+    var initializationSettingsAndroid =
+        const AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+    _createNotificationChannel('1234', 'Channel');
+
+    if (Platform.isAndroid) {
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+        showNotification(generateNewId(), message);
+      });
+      FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
+        print(newToken);
+      });
+    }
   }
 
   @override
@@ -120,5 +144,17 @@ class _DashboardState extends State<Dashboard> {
       currentStream = null;
     });
     super.dispose();
+  }
+
+  Future<void> _createNotificationChannel(String id, String name) async {
+    var androidNotificationChannel = AndroidNotificationChannel(
+      id,
+      name,
+      importance: Importance.max,
+    );
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(androidNotificationChannel);
   }
 }
