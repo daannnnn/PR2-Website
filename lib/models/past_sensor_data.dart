@@ -21,7 +21,7 @@ class PastSensorData extends SensorValue {
 
   factory PastSensorData.fromRTDB(Map<String, dynamic> data) {
     return PastSensorData(
-      hour: (data[DATE] as int) - 8,
+      hour: data[DATE] as int,
       airHumidity: (data[AIR_HUMIDITY] as int).toDouble() / 100,
       airTemperature: (data[AIR_TEMPERATURE] as int).toDouble() / 10,
       soilTemperature: (data[SOIL_TEMPERATURE] as int).toDouble() / 10,

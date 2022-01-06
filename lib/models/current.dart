@@ -21,7 +21,7 @@ class Current extends SensorValue {
 
   factory Current.fromRTDB(Map<String, dynamic> data) {
     return Current(
-      seconds: ((data[TOTAL][DATE] as int) - (8 * 60 * 60)).toDouble(),
+      seconds: (data[TOTAL][DATE] as int).toDouble(),
       airHumidity: (data[AIR_HUMIDITY] as int).toDouble() / 100,
       airTemperature: (data[AIR_TEMPERATURE] as int).toDouble() / 10,
       soilTemperature: (data[SOIL_TEMPERATURE] as int).toDouble() / 10,
