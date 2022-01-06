@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.pr2">
+    package="com.bulakin3.techfro">
    <application
-        android:label="pr2"
+        android:label="Techfro"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
