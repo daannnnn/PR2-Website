@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pr2/models/last_day_summary.dart';
+import 'package:pr2/models/day_summary.dart';
 import 'package:pr2/models/last_day_summary_future.dart';
 
 import 'day_summary_card.dart';
@@ -30,7 +30,7 @@ class PastDataSummary extends StatelessWidget {
               if (snapshot.hasError) {
                 return const Text('Error');
               } else if (snapshot.hasData) {
-                return DaySummaryCard(snapshot.data as LastDaySummary);
+                return DaySummaryCard(snapshot.data as DaySummary);
               } else if (!snapshot.hasData) {
                 return const Text('No past data yet');
               } else {

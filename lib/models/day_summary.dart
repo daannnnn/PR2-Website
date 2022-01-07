@@ -1,10 +1,10 @@
 import 'package:pr2/models/past_sensor_data.dart';
 import 'package:pr2/models/sensor_value.dart';
 
-class LastDaySummary extends SensorValue {
+class DaySummary extends SensorValue {
   final DateTime date;
 
-  LastDaySummary({
+  DaySummary({
     required this.date,
     airHumidity,
     airTemperature,
@@ -19,7 +19,16 @@ class LastDaySummary extends SensorValue {
           light: light,
         );
 
-  factory LastDaySummary.fromList(List<PastSensorData> pastData) {
+  DaySummary.fromList(List<PastSensorData> pastData)
+      : date = DateTime.fromMillisecondsSinceEpoch(
+            pastData[0].hour * 60 * 60 * 1000),
+        super(
+          airHumidity: 0,
+          airTemperature: 0,
+          soilTemperature: 0,
+          soilMoisture: 0,
+          light: 0,
+        ) {
     var totalAirHumidity = 0.0;
     var totalAirTemperature = 0.0;
     var totalSoilTemperature = 0.0;
@@ -36,8 +45,6 @@ class LastDaySummary extends SensorValue {
       count++;
     }
 
-    DateTime date =
-        DateTime.fromMillisecondsSinceEpoch(pastData[0].hour * 60 * 60 * 1000);
     double avgAirHumidity =
         double.parse((totalAirHumidity / count).toStringAsFixed(2));
     double avgAirTemperature =
@@ -48,13 +55,10 @@ class LastDaySummary extends SensorValue {
         double.parse((totalSoilMoisture / count).toStringAsFixed(2));
     double avgLight = double.parse((totalLight / count).toStringAsFixed(2));
 
-    return LastDaySummary(
-      date: date,
-      airHumidity: avgAirHumidity,
-      airTemperature: avgAirTemperature,
-      soilTemperature: avgSoilTemperature,
-      soilMoisture: avgSoilMoisture,
-      light: avgLight,
-    );
+    airHumidity = avgAirHumidity;
+    airTemperature = avgAirTemperature;
+    soilTemperature = avgSoilTemperature;
+    soilMoisture = avgSoilMoisture;
+    light = avgLight;
   }
 }

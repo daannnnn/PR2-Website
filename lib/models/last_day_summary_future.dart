@@ -1,5 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'package:pr2/models/last_day_summary.dart';
+import 'package:pr2/models/day_summary.dart';
 import 'package:pr2/models/past_sensor_data.dart';
 
 import '../constants.dart';
@@ -7,7 +7,7 @@ import '../constants.dart';
 class LastDaySummaryFuture {
   final _database = FirebaseDatabase.instance.reference();
 
-  Future<LastDaySummary?> getLastDaySummaryFuture() async {
+  Future<DaySummary?> getLastDaySummaryFuture() async {
     final endAt =
         ((DateTime.now().millisecondsSinceEpoch / 1000 / 60 / 60 / 24).floor() *
                 24) -
@@ -19,7 +19,7 @@ class LastDaySummaryFuture {
         .limitToLast(1)
         .once();
 
-    LastDaySummary? result;
+    DaySummary? result;
 
     if (lastUpdate.exists) {
       final lastDate = Map<String, dynamic>.from(lastUpdate.value)
@@ -43,7 +43,7 @@ class LastDaySummaryFuture {
             .add(PastSensorData.fromRTDB(Map<String, dynamic>.from(value)));
       });
 
-      result = LastDaySummary.fromList(resultList);
+      result = DaySummary.fromList(resultList);
     }
 
     return Future.value(result);

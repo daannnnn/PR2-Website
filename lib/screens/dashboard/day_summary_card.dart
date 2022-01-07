@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:pr2/models/last_day_summary.dart';
+import 'package:pr2/models/day_summary.dart';
 import 'package:pr2/screens/dashboard/sensor_data_row.dart';
 
 class DaySummaryCard extends StatelessWidget {
-  const DaySummaryCard(this._lastDaySummary, {Key? key}) : super(key: key);
+  const DaySummaryCard(this._daySummary, {Key? key}) : super(key: key);
 
-  final LastDaySummary _lastDaySummary;
+  final DaySummary _daySummary;
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +17,11 @@ class DaySummaryCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              DateFormat('EEEE, MMMM d').format(_lastDaySummary.date),
+              DateFormat('EEEE, MMMM d').format(_daySummary.date),
               style: Theme.of(context).textTheme.bodyText1,
             ),
             const SizedBox(height: 8.0),
-            SensorDataRow(sensorValue: _lastDaySummary)
+            SensorDataRow(sensorValue: _daySummary)
           ],
         ),
       ),
