@@ -18,7 +18,31 @@ class SensorLineChartBarData extends LineChartBarData {
               ) {
                 return FlDotCirclePainter(
                   radius: 4,
-                  color: bar.colors[1].withOpacity(0.5),
+                  color: bar.colors.last.withOpacity(0.5),
+                  strokeColor: Colors.transparent,
+                );
+              }),
+          colors: [color.withOpacity(0.6)],
+          barWidth: 4,
+          isCurved: false,
+        );
+
+        
+  SensorLineChartBarData.withFade(List<SensorValueSpot> spots, Color color,
+      {bool? showSpots})
+      : super(
+          spots: spots,
+          dotData: FlDotData(
+              show: showSpots ?? true,
+              getDotPainter: (
+                FlSpot spot,
+                double xPercentage,
+                LineChartBarData bar,
+                int index,
+              ) {
+                return FlDotCirclePainter(
+                  radius: 4,
+                  color: bar.colors.last.withOpacity(0.5),
                   strokeColor: Colors.transparent,
                 );
               }),

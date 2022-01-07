@@ -142,19 +142,19 @@ class _SensorValuesLineChartState extends State<SensorValuesLineChart> {
                       drawVerticalLine: false,
                     ),
                     lineBarsData: [
-                      SensorLineChartBarData(
+                      SensorLineChartBarData.withFade(
                         timePoints,
                         Colors.white,
                         showSpots: false,
                       ), // Add time title to tooltip.
-                      SensorLineChartBarData(
+                      SensorLineChartBarData.withFade(
                           airHumidityPoints, Colors.blueAccent),
-                      SensorLineChartBarData(
+                      SensorLineChartBarData.withFade(
                           airTemperaturePoints, Colors.redAccent),
-                      SensorLineChartBarData(
+                      SensorLineChartBarData.withFade(
                           soilTemperaturePoints, Colors.greenAccent),
-                      SensorLineChartBarData(soilMoisturePoints, Colors.brown),
-                      SensorLineChartBarData(lightPoints, Colors.orangeAccent),
+                      SensorLineChartBarData.withFade(soilMoisturePoints, Colors.brown),
+                      SensorLineChartBarData.withFade(lightPoints, Colors.orangeAccent),
                     ],
                     titlesData: titlesData,
                   ),
@@ -179,7 +179,7 @@ class _SensorValuesLineChartState extends State<SensorValuesLineChart> {
                 ) {
                   return FlDotCirclePainter(
                     radius: 6,
-                    color: bar.colors[1],
+                    color: bar.colors.last,
                     strokeColor: Colors.transparent,
                   );
                 },
