@@ -56,4 +56,9 @@ class SensorValueSpot extends FlSpot {
   bool isEmpty() {
     return type == SensorValueType.noData;
   }
+
+  @override
+  SensorValueSpot copyWith({double? x, double? y}) {
+    return SensorValueSpot(x ?? this.x, y ?? this.y, type, value);
+  }
 }
