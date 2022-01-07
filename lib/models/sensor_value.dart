@@ -1,9 +1,9 @@
 class SensorValue {
-  final double airHumidity;
-  final double airTemperature;
-  final double soilTemperature;
-  final double soilMoisture;
-  final double light;
+  double airHumidity = 0;
+  double airTemperature = 0;
+  double soilTemperature = 0;
+  double soilMoisture = 0;
+  double light = 0;
 
   SensorValue({
     required this.airHumidity,
