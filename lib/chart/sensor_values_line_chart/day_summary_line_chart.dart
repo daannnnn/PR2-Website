@@ -32,8 +32,10 @@ class _DaySummaryLineChartState extends State<DaySummaryLineChart> {
     super.initState();
     _chartHelper = LineChartHelper(sensorValueFormatHelper: _formatHelper);
 
+    final offset = DateTime.now().timeZoneOffset.inHours;
     final firstHour =
-        ((widget.hourlyData.first.hour / 24).floor() * 24).toDouble();
+        ((((widget.hourlyData.first.hour + offset) / 24).floor() * 24) - offset)
+            .toDouble();
     for (var element in widget.hourlyData) {
       airHumidityPoints.add(SensorValueSpot.ofAirHumidity(
           element.hour - firstHour, element.airHumidity));

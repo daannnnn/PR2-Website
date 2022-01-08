@@ -1,5 +1,4 @@
 import 'package:firebase_database/firebase_database.dart';
-import 'package:intl/intl.dart';
 import 'package:pr2/models/day_sensor_data.dart';
 import 'package:pr2/models/past_sensor_data.dart';
 
@@ -25,7 +24,8 @@ class PastDataFuture {
         if (isSameDay(hour, data.hour)) {
           pastSensorData.add(data);
         } else {
-          result.add(DaySensorData.fromList(hourlyData: List.from(pastSensorData)));
+          result.add(
+              DaySensorData.fromList(hourlyData: List.from(pastSensorData)));
           pastSensorData.clear();
           pastSensorData.add(data);
           hour = data.hour;
