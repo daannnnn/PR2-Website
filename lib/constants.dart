@@ -6,34 +6,34 @@ const String VALUES = 'c';
 const String DATE = 'd';
 const String LIST = 'e';
 
-const AIR_HUMIDITY = "f";
-const AIR_TEMPERATURE = "g";
-const SOIL_TEMPERATURE = "h";
-const SOIL_MOISTURE = "i";
-const LIGHT = "j";
+const String AIR_HUMIDITY = "f";
+const String AIR_TEMPERATURE = "g";
+const String SOIL_TEMPERATURE = "h";
+const String SOIL_MOISTURE = "i";
+const String LIGHT = "j";
 
-const COUNT = "k";
+const String COUNT = "k";
 
-const PREFERENCES = "l";
-const DEVICE_PREFERENCES = "m";
+const String PREFERENCES = "l";
+const String DEVICE_PREFERENCES = "m";
 
-const USER_PREF = "n";
+const String USER_PREF = "n";
 
-const ALERTS = "o";
-const FACTOR = "p";
-const VALUE = "q";
-const ON_INCREASE = "r";
-const ALERT_VALUE = "u";
+const String ALERTS = "o";
+const String FACTOR = "p";
+const String VALUE = "q";
+const String ON_INCREASE = "r";
+const String ALERT_VALUE = "u";
 
-const TOKENS = "s";
-const TOKEN = "t";
+const String TOKENS = "s";
+const String TOKEN = "t";
 
-const UPDATE_FLAGS = "v";
+const String UPDATE_FLAGS = "v";
 
-const UPDATE_INFO = "w";
+const String UPDATE_INFO = "w";
 
-const UPDATE_INTERVAL = "x";
+const String UPDATE_INTERVAL = "x";
 
-const UPDATE_FAILED = "y";
+const String UPDATE_FAILED = "y";
 
-const ALERT_LIST = "z";
+const String ALERT_LIST = "z";
