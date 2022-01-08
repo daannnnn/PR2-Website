@@ -1,5 +1,11 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pr2/chart/sensor_values_line_chart/day_summary_line_chart.dart';
+import 'package:pr2/chart/sensor_values_line_chart/sensor_line_chart_bar_data.dart';
+import 'package:pr2/chart/sensor_values_line_chart/sensor_value_spot.dart';
+import 'package:pr2/chart/sensor_values_line_chart/sensor_value_type.dart';
+import 'package:pr2/models/day_sensor_data.dart';
 import 'package:pr2/models/past_data_future.dart';
 import 'package:pr2/models/past_sensor_data.dart';
 import 'package:pr2/screens/dashboard/sensor_data_row.dart';
@@ -38,7 +44,7 @@ class _PastDataState extends State<PastData> {
         future: pastDataFuture,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            List<PastSensorData> data = snapshot.data as List<PastSensorData>;
+            List<DaySensorData> data = snapshot.data as List<DaySensorData>;
             return ListView.separated(
               padding: const EdgeInsets.all(24.0),
               separatorBuilder: (context, index) {
@@ -54,11 +60,10 @@ class _PastDataState extends State<PastData> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Text(DateFormat.MMMMd().add_jm().format(
-                          DateTime.fromMillisecondsSinceEpoch(
-                              (data[index].hour) * 60 * 60 * 1000))),
+                      Text(DateFormat.yMMMMd().format(data[index].date)),
                       const SizedBox(height: 8.0),
                       SensorDataRow(sensorValue: data[index]),
+                      DaySummaryLineChart(hourlyData: data[index].hourlyData),
                     ],
                   ),
                 ));
