@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:pr2/chart/sensor_values_line_chart/sensor_values_line_chart.dart';
+import 'package:pr2/chart/sensor_values_line_chart/realtime_values_line_chart.dart';
 import 'package:pr2/models/current.dart';
 import 'realtime_data_cards.dart';
 
@@ -21,8 +21,8 @@ class RealtimeData extends StatefulWidget {
 }
 
 class _RealtimeDataState extends State<RealtimeData> {
-  final SensorValuesLineChartController controller =
-      SensorValuesLineChartController();
+  final RealtimeValuesLineChartController controller =
+      RealtimeValuesLineChartController();
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +63,7 @@ class _RealtimeDataState extends State<RealtimeData> {
                 style: Theme.of(context).textTheme.overline,
                 textAlign: TextAlign.center,
               ),
-              SensorValuesLineChart(
+              RealtimeValuesLineChart(
                   intervalSeconds: widget.intervalSeconds,
                   pastMinuteValueToShow: widget.pastMinuteValueToShow,
                   controller: controller),

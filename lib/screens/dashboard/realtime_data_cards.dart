@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pr2/chart/sensor_values_line_chart/sensor_values_line_chart.dart';
+import 'package:pr2/chart/sensor_values_line_chart/realtime_values_line_chart.dart';
 import 'package:pr2/models/current.dart';
 import 'package:responsive_grid/responsive_grid.dart';
 import 'data_card.dart';
@@ -10,7 +10,7 @@ class RealtimeDataCards extends StatelessWidget {
       : super(key: key);
 
   final Current current;
-  final SensorValuesLineChartController controller;
+  final RealtimeValuesLineChartController controller;
 
   @override
   Widget build(BuildContext context) {

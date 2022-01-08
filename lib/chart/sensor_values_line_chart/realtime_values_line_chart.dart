@@ -2,15 +2,15 @@ import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:pr2/chart/sensor_values_line_chart/sensor_value_format_helper.dart';
 import 'package:pr2/models/current.dart';
 
+import 'line_chart_helper.dart';
 import 'sensor_line_chart_bar_data.dart';
 import 'sensor_value_spot.dart';
-import 'sensor_value_type.dart';
 
-class SensorValuesLineChart extends StatefulWidget {
-  const SensorValuesLineChart({
+class RealtimeValuesLineChart extends StatefulWidget {
+  const RealtimeValuesLineChart({
     Key? key,
     required this.intervalSeconds,
     required this.pastMinuteValueToShow,
@@ -19,13 +19,14 @@ class SensorValuesLineChart extends StatefulWidget {
 
   final int intervalSeconds;
   final int pastMinuteValueToShow;
-  final SensorValuesLineChartController controller;
+  final RealtimeValuesLineChartController controller;
 
   @override
-  _SensorValuesLineChartState createState() => _SensorValuesLineChartState();
+  _RealtimeValuesLineChartState createState() =>
+      _RealtimeValuesLineChartState();
 }
 
-class _SensorValuesLineChartState extends State<SensorValuesLineChart> {
+class _RealtimeValuesLineChartState extends State<RealtimeValuesLineChart> {
   final timePoints = <SensorValueSpot>[];
   final airHumidityPoints = <SensorValueSpot>[];
   final airTemperaturePoints = <SensorValueSpot>[];
@@ -35,14 +36,15 @@ class _SensorValuesLineChartState extends State<SensorValuesLineChart> {
 
   final random = Random();
 
-  int maxTemp = 40;
-  int minTemp = 20;
+  final SensorValueFormatHelper _formatHelper = SensorValueFormatHelper();
+  late LineChartHelper _chartHelper;
 
   late int limitCount;
 
   @override
   void initState() {
     super.initState();
+    _chartHelper = LineChartHelper(sensorValueFormatHelper: _formatHelper);
     limitCount = widget.pastMinuteValueToShow * 60 ~/ widget.intervalSeconds;
     widget.controller.addSensorValues = addSensorValues;
   }
@@ -72,28 +74,17 @@ class _SensorValuesLineChartState extends State<SensorValuesLineChart> {
       airHumidityPoints
           .add(SensorValueSpot.ofAirHumidity(seconds, airHumidity));
 
-      if (airTemp > maxTemp) {
+      if (_formatHelper.updateTemperature(airTemp)) {
         refreshTemp = true;
-        maxTemp = airTemp.ceil() + 5;
       }
-      if (airTemp < minTemp) {
-        refreshTemp = true;
-        minTemp = airTemp.floor() - 5;
-      }
-      airTemperaturePoints.add(
-          SensorValueSpot.ofAirTemperature(seconds, airTemp, maxTemp, minTemp));
+      airTemperaturePoints.add(SensorValueSpot.ofAirTemperature(
+          seconds, airTemp, _formatHelper.maxTemp, _formatHelper.minTemp));
 
-      if (soilTemp > maxTemp) {
+      if (_formatHelper.updateTemperature(soilTemp)) {
         refreshTemp = true;
-        maxTemp = soilTemp.ceil() + 5;
-        refreshTemperatureGraph();
-      }
-      if (soilTemp < minTemp) {
-        refreshTemp = true;
-        minTemp = soilTemp.floor() - 5;
       }
       soilTemperaturePoints.add(SensorValueSpot.ofSoilTemperature(
-          seconds, soilTemp, maxTemp, minTemp));
+          seconds, soilTemp, _formatHelper.maxTemp, _formatHelper.minTemp));
 
       soilMoisturePoints
           .add(SensorValueSpot.ofSoilMoisture(seconds, soilMoisture));
@@ -109,12 +100,12 @@ class _SensorValuesLineChartState extends State<SensorValuesLineChart> {
     for (int i = 0; i < airTemperaturePoints.length; i++) {
       SensorValueSpot temp = airTemperaturePoints[i];
       airTemperaturePoints[i] = SensorValueSpot.ofAirTemperature(
-          temp.x, temp.value, maxTemp, minTemp);
+          temp.x, temp.value, _formatHelper.maxTemp, _formatHelper.minTemp);
     }
     for (int i = 0; i < soilTemperaturePoints.length; i++) {
       SensorValueSpot temp = soilTemperaturePoints[i];
       soilTemperaturePoints[i] = SensorValueSpot.ofSoilTemperature(
-          temp.x, temp.value, maxTemp, minTemp);
+          temp.x, temp.value, _formatHelper.maxTemp, _formatHelper.minTemp);
     }
   }
 
@@ -135,7 +126,7 @@ class _SensorValuesLineChartState extends State<SensorValuesLineChart> {
                     minX: airHumidityPoints.last.x -
                         (widget.pastMinuteValueToShow * 60),
                     maxX: airHumidityPoints.last.x,
-                    lineTouchData: lineTouchData,
+                    lineTouchData: _chartHelper.lineTouchData,
                     clipData: FlClipData.all(),
                     gridData: FlGridData(
                       show: false,
@@ -153,10 +144,12 @@ class _SensorValuesLineChartState extends State<SensorValuesLineChart> {
                           airTemperaturePoints, Colors.redAccent),
                       SensorLineChartBarData.withFade(
                           soilTemperaturePoints, Colors.greenAccent),
-                      SensorLineChartBarData.withFade(soilMoisturePoints, Colors.brown),
-                      SensorLineChartBarData.withFade(lightPoints, Colors.orangeAccent),
+                      SensorLineChartBarData.withFade(
+                          soilMoisturePoints, Colors.brown),
+                      SensorLineChartBarData.withFade(
+                          lightPoints, Colors.orangeAccent),
                     ],
-                    titlesData: titlesData,
+                    titlesData: _chartHelper.titlesData,
                   ),
                 ),
               )
@@ -164,102 +157,9 @@ class _SensorValuesLineChartState extends State<SensorValuesLineChart> {
           )
         : Container();
   }
-
-  LineTouchData get lineTouchData => LineTouchData(
-        getTouchedSpotIndicator: (bar, spotIndexes) {
-          return spotIndexes.map((spotIndex) {
-            return TouchedSpotIndicatorData(
-              FlLine(strokeWidth: 0),
-              FlDotData(
-                getDotPainter: (
-                  FlSpot spot,
-                  double xPercentage,
-                  LineChartBarData bar,
-                  int index,
-                ) {
-                  return FlDotCirclePainter(
-                    radius: 6,
-                    color: bar.colors.last,
-                    strokeColor: Colors.transparent,
-                  );
-                },
-              ),
-            );
-          }).toList();
-        },
-        touchTooltipData: touchTooltipData,
-      );
-
-  LineTouchTooltipData get touchTooltipData => LineTouchTooltipData(
-      tooltipBgColor: Colors.black.withOpacity(0.5),
-      getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
-        return touchedBarSpots.map((barSpot) {
-          String text;
-          if (barSpot.bar.spots[barSpot.spotIndex] is SensorValueSpot) {
-            SensorValueSpot spot =
-                barSpot.bar.spots[barSpot.spotIndex] as SensorValueSpot;
-            if (spot.type != SensorValueType.noData &&
-                spot.type != SensorValueType.time) {
-              text =
-                  '${spot.type.name}: ${spot.isPercentage() ? '${spot.y.toStringAsFixed(2)}%' : '${((spot.y / 100 * (maxTemp - minTemp)) + minTemp).toStringAsFixed(2)}°C'}';
-            } else if (spot.type == SensorValueType.time) {
-              text = DateFormat.jms().format(
-                  DateTime.fromMillisecondsSinceEpoch(spot.x.toInt() * 1000));
-            } else {
-              text = SensorValueType.noData.name;
-            }
-          } else {
-            text = 'Error';
-          }
-          return LineTooltipItem(
-            text,
-            const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 10,
-            ),
-            textAlign: TextAlign.left,
-          );
-        }).toList();
-      });
-
-  FlTitlesData get titlesData => FlTitlesData(
-      show: true,
-      topTitles: SideTitles(showTitles: false),
-      bottomTitles: SideTitles(showTitles: false),
-      rightTitles: getSideTitles(
-        getTitles: (double value) {
-          return '${((value / 100 * (maxTemp - minTemp)) + minTemp).toStringAsFixed(0)}°C';
-        },
-      ),
-      leftTitles: getSideTitles(
-        getTitles: (double value) {
-          return '${value.toInt()}%';
-        },
-        interval: 25.0,
-      ));
-
-  SideTitles getSideTitles({
-    String Function(double value)? getTitles,
-    double? interval,
-    double? margin,
-  }) {
-    return SideTitles(
-      showTitles: true,
-      reservedSize: 40,
-      getTextStyles: (context, value) => const TextStyle(
-        color: Color(0xff72719b),
-        fontWeight: FontWeight.bold,
-        fontSize: 10,
-      ),
-      getTitles: getTitles,
-      interval: interval,
-      margin: margin,
-    );
-  }
 }
 
-class SensorValuesLineChartController {
+class RealtimeValuesLineChartController {
   List<Current> toAdd = List.empty(growable: true);
   Function(Current current)? _addSensorValues;
 
