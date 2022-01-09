@@ -85,13 +85,9 @@ class _DashboardState extends State<Dashboard> {
         FirebaseMessaging.onMessage.listen((RemoteMessage message) {
           showNotification(generateNewId(), message);
         });
-        FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
-          print(newToken);
-        });
       }
-    } catch (e) {
-      print(e);
-    }
+      // ignore: empty_catches
+    } catch (e) {}
   }
 
   @override
@@ -115,9 +111,6 @@ class _DashboardState extends State<Dashboard> {
                 if (key != null) {
                   DatabaseReference ref =
                       _database.reference().child(PREFERENCES).child(TOKENS);
-                  print('key');
-                  print(key);
-                  print('key');
                   await ref.update(
                       {'$LIST/$key': null, DATE: ServerValue.timestamp});
                 }
