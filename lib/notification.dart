@@ -2,76 +2,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 
-import 'constants.dart';
+import 'models/factor.dart';
 
-enum _Factor {
-  airHumidity,
-  airTemperature,
-  soilTemperature,
-  soilMoisture,
-  light
-}
-
-extension _FactorExtension on _Factor {
-  int get divider {
-    switch (this) {
-      case _Factor.airHumidity:
-        return 100;
-      case _Factor.airTemperature:
-        return 10;
-      case _Factor.soilTemperature:
-        return 10;
-      case _Factor.soilMoisture:
-        return 100;
-      case _Factor.light:
-        return 100;
-      default:
-        return 1;
-    }
-  }
-
-  String get sign {
-    switch (this) {
-      case _Factor.airHumidity:
-        return '%';
-      case _Factor.airTemperature:
-        return '°C';
-      case _Factor.soilTemperature:
-        return '°C';
-      case _Factor.soilMoisture:
-        return '%';
-      case _Factor.light:
-        return '%';
-      default:
-        return '';
-    }
-  }
-
-  String get name {
-    switch (this) {
-      case _Factor.airHumidity:
-        return 'Air Humidity';
-      case _Factor.airTemperature:
-        return 'Air Temperature';
-      case _Factor.soilTemperature:
-        return 'Soil Temperature';
-      case _Factor.soilMoisture:
-        return 'Soil Moisture';
-      case _Factor.light:
-        return 'Light';
-      default:
-        return '';
-    }
-  }
-}
-
-final factorMap = {
-  AIR_HUMIDITY: _Factor.airHumidity,
-  AIR_TEMPERATURE: _Factor.airTemperature,
-  SOIL_TEMPERATURE: _Factor.soilTemperature,
-  SOIL_MOISTURE: _Factor.soilMoisture,
-  LIGHT: _Factor.light,
-};
 final regex = RegExp(r"([.]*0)(?!.*\d)");
 
 Future<void> showNotification(
@@ -80,7 +12,7 @@ Future<void> showNotification(
   String channelId = '1234',
   String channelTitle = 'Channel',
 }) async {
-  _Factor? factor = factorMap[message.data["p"]];
+  Factor? factor = factorMap[message.data["p"]];
   String title = '';
   title += factor?.name ?? '';
   title += message.data["r"].toLowerCase() == 'true' ? " above " : " below ";
