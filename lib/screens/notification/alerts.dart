@@ -98,6 +98,7 @@ class _AlertsState extends State<Alerts> {
                     ),
                   );
                 },
+                controller: scrollController,
               );
             }));
   }
