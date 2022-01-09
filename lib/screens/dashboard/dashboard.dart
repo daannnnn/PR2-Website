@@ -12,6 +12,7 @@ import 'package:pr2/constants.dart';
 import 'package:pr2/models/current.dart';
 import 'package:pr2/models/current_stream_publisher.dart';
 import 'package:pr2/screens/notification/alerts.dart';
+import 'package:pr2/screens/notification/notification_list.dart';
 import 'package:pr2/screens/past_data/past_data.dart';
 import 'package:pr2/services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -133,6 +134,22 @@ class _DashboardState extends State<Dashboard> {
           padding: const EdgeInsets.all(24.0),
           child: Column(
             children: [
+              OutlinedButton(
+                  onPressed: () async {
+                    setState(() {
+                      currentStream = null;
+                    });
+                    await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const NotificationList()));
+                    // TODO: Check if element already exists.
+                    setState(() {
+                      currentStream =
+                          CurrentStreamPublisher().getCurrentStream();
+                    });
+                  },
+                  child: const Text("Notifications")),
               OutlinedButton(
                   onPressed: () async {
                     setState(() {
