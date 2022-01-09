@@ -1,8 +1,11 @@
 import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:pr2/constants.dart';
@@ -10,6 +13,7 @@ import 'package:pr2/models/current.dart';
 import 'package:pr2/models/current_stream_publisher.dart';
 import 'package:pr2/screens/past_data/past_data.dart';
 import 'package:pr2/services/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../notification.dart';
 import 'past_data_summary.dart';
 import 'realtime_data.dart';
@@ -25,6 +29,7 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   final AuthService _auth = AuthService();
+  final _database = FirebaseDatabase.instance;
 
   late ScrollController scrollController;
   bool isScrolledToTop = true;
@@ -33,9 +38,20 @@ class _DashboardState extends State<Dashboard> {
 
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
   @override
   void initState() {
     super.initState();
+
+    try {
+      if (Platform.isAndroid) {
+        SchedulerBinding.instance
+            ?.addPostFrameCallback((_) => handleFCMToken());
+      }
+      // ignore: empty_catches
+    } catch (e) {}
+
     currentStream = CurrentStreamPublisher().getCurrentStream();
     scrollController = ScrollController();
     scrollController.addListener(() {
@@ -95,6 +111,19 @@ class _DashboardState extends State<Dashboard> {
                         children: const [CircularProgressIndicator()],
                       ));
                     });
+                final key = await _getTokenKey();
+                if (key != null) {
+                  DatabaseReference ref =
+                      _database.reference().child(PREFERENCES).child(TOKENS);
+                  print('key');
+                  print(key);
+                  print('key');
+                  await ref.update(
+                      {'$LIST/$key': null, DATE: ServerValue.timestamp});
+                }
+                await _removeTokenKey();
+                await _removeLastTokenRefreshTime();
+                await FirebaseMessaging.instance.deleteToken();
                 await _auth.signOut();
                 Navigator.pop(context);
               },
@@ -160,5 +189,72 @@ class _DashboardState extends State<Dashboard> {
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(androidNotificationChannel);
+  }
+
+  void handleFCMToken() async {
+    final millis = await _getLastTokenRefreshTime();
+    if (DateTime.now()
+            .difference(DateTime.fromMillisecondsSinceEpoch(millis))
+            .inDays >=
+        30) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+                title: const Text('Setting up notifications'),
+                content: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [CircularProgressIndicator()],
+                ));
+          });
+      DatabaseReference ref =
+          _database.reference().child(PREFERENCES).child(TOKENS);
+      final key = await _getTokenKey() ?? ref.child(LIST).push().key;
+      final token = await FirebaseMessaging.instance.getToken();
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      await ref.update({
+        '$LIST/$key': {
+          DATE: ServerValue.timestamp,
+          TOKEN: token,
+          DEVICE_DETAIL: androidInfo.model
+        },
+        DATE: ServerValue.timestamp
+      }).onError((error, stackTrace) => null);
+      await _saveTokenKey(key);
+      await _saveLastTokenRefreshTime();
+      Navigator.pop(context);
+    }
+  }
+
+  Future<void> _saveTokenKey(String key) async {
+    final SharedPreferences prefs = await _prefs;
+    await prefs.setString('fcmTokenKey', key);
+  }
+
+  Future<String?> _getTokenKey() async {
+    final SharedPreferences prefs = await _prefs;
+    return prefs.getString('fcmTokenKey');
+  }
+
+  Future<void> _removeTokenKey() async {
+    final SharedPreferences prefs = await _prefs;
+    await prefs.remove('fcmTokenKey');
+  }
+
+  Future<void> _saveLastTokenRefreshTime() async {
+    final SharedPreferences prefs = await _prefs;
+    await prefs.setInt(
+        'lastTokenRefreshTime', DateTime.now().millisecondsSinceEpoch);
+  }
+
+  Future<int> _getLastTokenRefreshTime() async {
+    final SharedPreferences prefs = await _prefs;
+    return prefs.getInt('lastTokenRefreshTime') ?? 0;
+  }
+
+  Future<void> _removeLastTokenRefreshTime() async {
+    final SharedPreferences prefs = await _prefs;
+    await prefs.remove('lastTokenRefreshTime');
   }
 }

@@ -37,3 +37,5 @@ const String UPDATE_INTERVAL = "x";
 const String UPDATE_FAILED = "y";
 
 const String ALERT_LIST = "z";
+
+const String DEVICE_DETAIL = "aa";
