@@ -59,6 +59,23 @@ extension FactorExtension on Factor {
         return '';
     }
   }
+
+  String get key {
+    switch (this) {
+      case Factor.airHumidity:
+        return AIR_HUMIDITY;
+      case Factor.airTemperature:
+        return AIR_TEMPERATURE;
+      case Factor.soilTemperature:
+        return SOIL_TEMPERATURE;
+      case Factor.soilMoisture:
+        return SOIL_MOISTURE;
+      case Factor.light:
+        return LIGHT;
+      default:
+        return '';
+    }
+  }
 }
 
 final factorMap = {

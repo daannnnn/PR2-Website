@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pr2/models/alert.dart';
 import 'package:pr2/models/alerts_list_stream_publisher.dart';
 import 'package:pr2/models/factor.dart';
+import 'package:pr2/screens/notification/add_alert.dart';
 import 'package:pr2/screens/notification/alert_details.dart';
 
 class Alerts extends StatefulWidget {
@@ -49,7 +50,10 @@ class _AlertsState extends State<Alerts> {
     return Scaffold(
         backgroundColor: Colors.white,
         floatingActionButton: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () async {
+            await Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const AddAlert()));
+          },
           child: const Icon(Icons.add),
         ),
         appBar: AppBar(
