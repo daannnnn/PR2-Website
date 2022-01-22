@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import '../constants.dart';
 
 enum Factor {
@@ -74,6 +76,21 @@ extension FactorExtension on Factor {
         return LIGHT;
       default:
         return '';
+    }
+  }
+
+  Color get color {
+    switch (this) {
+      case Factor.airHumidity:
+        return Colors.blueAccent;
+      case Factor.airTemperature:
+        return Colors.redAccent;
+      case Factor.soilTemperature:
+        return Colors.greenAccent;
+      case Factor.soilMoisture:
+        return Colors.brown;
+      case Factor.light:
+        return Colors.orangeAccent;
     }
   }
 }

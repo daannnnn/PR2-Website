@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pr2/models/alert.dart';
 import 'package:pr2/models/alerts_list_stream_publisher.dart';
 import 'package:pr2/models/factor.dart';
-import 'package:pr2/screens/notification/add_alert.dart';
-import 'package:pr2/screens/notification/alert_details.dart';
+import 'package:pr2/screens/notification/add_edit_alert.dart';
 
 class Alerts extends StatefulWidget {
   const Alerts({Key? key}) : super(key: key);
@@ -51,8 +50,10 @@ class _AlertsState extends State<Alerts> {
         backgroundColor: Colors.white,
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            await Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const AddAlert()));
+            await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const AddEditAlert(add: true)));
           },
           child: const Icon(Icons.add),
         ),
