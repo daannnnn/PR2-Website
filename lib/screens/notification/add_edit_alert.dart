@@ -28,11 +28,16 @@ class _AddEditAlertState extends State<AddEditAlert> {
   final valueController = TextEditingController();
   bool? onIncrease;
 
+  final RegExp regex = RegExp(r'([.]*0)(?!.*\d)');
+
   @override
   void initState() {
     super.initState();
     factor = widget.factor;
     onIncrease = widget.onIncrease;
+    valueController.text = ((widget.value ?? 0) / (factor?.divider ?? 1))
+        .toString()
+        .replaceAll(regex, '');
   }
 
   @override
