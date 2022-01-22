@@ -8,12 +8,18 @@ import 'package:pr2/screens/notification/factor_card.dart';
 
 class AddEditAlert extends StatefulWidget {
   const AddEditAlert(
-      {Key? key, required this.add, this.factor, this.onIncrease, this.value})
+      {Key? key,
+      required this.add,
+      this.id,
+      this.factor,
+      this.onIncrease,
+      this.value})
       : title = add ? 'Add Alert' : 'Edit Alert',
         super(key: key);
 
   final bool add;
   final String title;
+  final String? id;
 
   final Factor? factor;
   final bool? onIncrease;
@@ -35,9 +41,11 @@ class _AddEditAlertState extends State<AddEditAlert> {
     super.initState();
     factor = widget.factor;
     onIncrease = widget.onIncrease;
-    valueController.text = ((widget.value ?? 0) / (factor?.divider ?? 1))
-        .toString()
-        .replaceAll(regex, '');
+    valueController.text = widget.value != null
+        ? (widget.value! / (factor?.divider ?? 1))
+            .toString()
+            .replaceAll(regex, '')
+        : '';
   }
 
   @override
@@ -71,7 +79,7 @@ class _AddEditAlertState extends State<AddEditAlert> {
                     .reference()
                     .child(PREFERENCES)
                     .child(ALERTS);
-                final key = ref.push().key;
+                final key = widget.add ? ref.push().key : widget.id;
 
                 int count = 0;
                 await ref

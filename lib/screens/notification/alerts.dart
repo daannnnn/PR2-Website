@@ -119,6 +119,7 @@ class _AlertsState extends State<Alerts> {
                                 MaterialPageRoute(
                                     builder: (context) => AddEditAlert(
                                           add: false,
+                                          id: alert.id,
                                           factor: alert.factor,
                                           onIncrease: alert.onIncrease,
                                           value: alert.value.toDouble(),
