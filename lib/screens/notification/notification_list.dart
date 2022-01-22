@@ -20,6 +20,8 @@ class _NotificationListState extends State<NotificationList> {
 
   List<AlertNotification> alertNotifications = List.empty();
 
+  final RegExp regex = RegExp(r'([.]*0)(?!.*\d)');
+
   @override
   void initState() {
     super.initState();
@@ -69,34 +71,52 @@ class _NotificationListState extends State<NotificationList> {
                 alertNotifications = snapshot.data as List<AlertNotification>;
               }
               return ListView.separated(
+                physics: const BouncingScrollPhysics(),
                 padding: const EdgeInsets.all(24.0),
                 separatorBuilder: (context, index) {
-                  return const SizedBox(
-                    height: 8.0,
+                  return Column(
+                    children: [
+                      const SizedBox(height: 8.0),
+                      Divider(height: 1.0, color: Colors.grey.withOpacity(0.5)),
+                      const SizedBox(height: 8.0),
+                    ],
                   );
                 },
                 itemCount: alertNotifications.length,
                 itemBuilder: (context, index) {
                   final notif = alertNotifications[index];
-                  return Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(24.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(DateFormat.yMMMd().add_jms().format(notif.date)),
-                          Text(notif.factor.name +
-                              (notif.onIncrease ? ' above ' : ' below ') +
-                              (notif.value / notif.factor.divider).toString() +
-                              notif.factor.sign +
-                              ' with value of ' +
-                              (notif.alertValue / notif.factor.divider)
-                                  .toString() +
-                              notif.factor.sign +
-                              '.')
-                        ],
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 8.0),
+                      Container(
+                        width: 24.0,
+                        height: 3.0,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.circular(2.0),
+                          color: notif.factor.color,
+                        ),
                       ),
-                    ),
+                      const SizedBox(height: 8.0),
+                      Text(
+                        'Went ${notif.onIncrease ? 'above' : 'below'} ${(notif.value / notif.factor.divider).toString().replaceAll(regex, '')}${notif.factor.sign}'
+                            .toUpperCase(),
+                        style: Theme.of(context).textTheme.overline,
+                      ),
+                      Text(
+                        '${notif.factor.name} at ${(notif.alertValue / notif.factor.divider).toString().replaceAll(regex, '')}${notif.factor.sign}',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText1
+                            ?.copyWith(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        DateFormat.yMMMMd().add_jms().format(notif.date),
+                        style: Theme.of(context).textTheme.caption,
+                      ),
+                      const SizedBox(height: 8.0),
+                    ],
                   );
                 },
                 controller: scrollController,
