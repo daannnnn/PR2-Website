@@ -95,7 +95,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF8F9FB),
       appBar: AppBar(
         actions: [
           TextButton(
@@ -126,50 +126,41 @@ class _DashboardState extends State<Dashboard> {
         ],
         title: Text(widget.title, style: Theme.of(context).textTheme.headline6),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFFF8F9FB),
         elevation: isScrolledToTop ? 0.0 : 4.0,
       ),
       body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
             children: [
-              OutlinedButton(
-                  onPressed: () async {
-                    setState(() {
-                      currentStream = null;
-                    });
-                    await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const NotificationList()));
-                    // TODO: Check if element already exists.
-                    setState(() {
-                      currentStream =
-                          CurrentStreamPublisher().getCurrentStream();
-                    });
-                  },
-                  child: const Text("Notifications")),
-              OutlinedButton(
-                  onPressed: () async {
-                    setState(() {
-                      currentStream = null;
-                    });
-                    await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const Alerts()));
-                    // TODO: Check if element already exists.
-                    setState(() {
-                      currentStream =
-                          CurrentStreamPublisher().getCurrentStream();
-                    });
-                  },
-                  child: const Text("Alerts")),
               RealtimeData(
                 stream: currentStream,
                 intervalSeconds: 2, // TODO: Retrieve from database
                 pastMinuteValueToShow: kIsWeb ? 5 : 1,
+                goToNotifications: () async {
+                  setState(() {
+                    currentStream = null;
+                  });
+                  await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const NotificationList()));
+                  setState(() {
+                    currentStream = CurrentStreamPublisher().getCurrentStream();
+                  });
+                },
+                goToEditAlerts: () async {
+                  setState(() {
+                    currentStream = null;
+                  });
+                  await Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const Alerts()));
+                  setState(() {
+                    currentStream = CurrentStreamPublisher().getCurrentStream();
+                  });
+                },
               ),
               const SizedBox(height: 48.0),
               Divider(height: 1.0, color: Colors.grey.withOpacity(0.5)),

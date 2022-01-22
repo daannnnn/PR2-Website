@@ -10,11 +10,16 @@ class RealtimeData extends StatefulWidget {
     required this.stream,
     required this.intervalSeconds,
     required this.pastMinuteValueToShow,
+    required this.goToNotifications,
+    required this.goToEditAlerts,
   }) : super(key: key);
 
   final Stream<Current>? stream;
   final int intervalSeconds;
   final int pastMinuteValueToShow;
+
+  final void Function() goToNotifications;
+  final void Function() goToEditAlerts;
 
   @override
   State<StatefulWidget> createState() => _RealtimeDataState();
@@ -55,6 +60,8 @@ class _RealtimeDataState extends State<RealtimeData> {
               RealtimeDataCards(
                 current: current,
                 controller: controller,
+                goToNotifications: widget.goToNotifications,
+                goToEditAlerts: widget.goToEditAlerts,
               ),
               const SizedBox(height: 24.0),
               Text(
