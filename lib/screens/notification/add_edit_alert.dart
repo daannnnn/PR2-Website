@@ -79,7 +79,7 @@ class _AddEditAlertState extends State<AddEditAlert> {
                       DATE: ServerValue.timestamp,
                       '$LIST/$key': {
                         FACTOR: factor?.key,
-                        VALUE: (int.tryParse(valueController.text) ?? 0) *
+                        VALUE: (double.tryParse(valueController.text) ?? 0.0) *
                             (factor?.divider ?? 1),
                         ON_INCREASE: onIncrease
                       }
