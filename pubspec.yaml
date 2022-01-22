@@ -100,11 +100,17 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
   fonts:
-    - family: OpenSans
+    - family: SourceSansPro
       fonts:
-        - asset: assets/fonts/OpenSans-Regular.ttf
-          weight: 400
-        - asset: assets/fonts/OpenSans-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/OpenSans-Bold.ttf
-          weight: 700
+        - asset: assets/fonts/SourceSansPro-ExtraLight.ttf
+        - asset: assets/fonts/SourceSansPro-ExtraLightItalic.ttf
+        - asset: assets/fonts/SourceSansPro-Light.ttf
+        - asset: assets/fonts/SourceSansPro-LightItalic.ttf
+        - asset: assets/fonts/SourceSansPro-Regular.ttf
+        - asset: assets/fonts/SourceSansPro-Italic.ttf
+        - asset: assets/fonts/SourceSansPro-SemiBold.ttf
+        - asset: assets/fonts/SourceSansPro-SemiBoldItalic.ttf
+        - asset: assets/fonts/SourceSansPro-Bold.ttf
+        - asset: assets/fonts/SourceSansPro-BoldItalic.ttf
+        - asset: assets/fonts/SourceSansPro-Black.ttf
+        - asset: assets/fonts/SourceSansPro-BlackItalic.ttf

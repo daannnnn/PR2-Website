@@ -28,9 +28,10 @@ class App extends StatelessWidget {
             child: MaterialApp(
               title: 'PR2',
               theme: ThemeData(
-                primarySwatch: Colors.green,
-                fontFamily: 'OpenSans',
-              ),
+                  primarySwatch: Colors.green,
+                  fontFamily: 'SourceSansPro',
+                  textTheme: TextTheme(
+                      button: TextStyle(fontWeight: FontWeight.w600))),
               home: const Wrapper(),
             ),
           );
