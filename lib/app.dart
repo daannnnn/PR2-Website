@@ -28,10 +28,14 @@ class App extends StatelessWidget {
             child: MaterialApp(
               title: 'PR2',
               theme: ThemeData(
-                  primarySwatch: Colors.green,
-                  fontFamily: 'SourceSansPro',
-                  textTheme: TextTheme(
-                      button: TextStyle(fontWeight: FontWeight.w600))),
+                primarySwatch: Colors.green,
+                fontFamily: 'SourceSansPro',
+                textTheme: const TextTheme(
+                  headline6: TextStyle(fontWeight: FontWeight.w600),
+                  button: TextStyle(fontWeight: FontWeight.w600),
+                  subtitle2: TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
               home: const Wrapper(),
             ),
           );
