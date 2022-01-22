@@ -154,12 +154,12 @@ class _AlertsState extends State<Alerts> {
                                   const SizedBox(width: 8.0),
                                   alert.onIncrease
                                       ? const Icon(
-                                          Icons.arrow_drop_down,
-                                          color: Color(0xFFFF6161),
-                                        )
-                                      : const Icon(
                                           Icons.arrow_drop_up,
                                           color: Color(0xFF00FF88),
+                                        )
+                                      : const Icon(
+                                          Icons.arrow_drop_down,
+                                          color: Color(0xFFFF6161),
                                         ),
                                 ],
                               ),
