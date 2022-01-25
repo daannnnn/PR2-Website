@@ -70,7 +70,7 @@ class _AlertsState extends State<Alerts> {
           ),
           title: Text('Alerts', style: Theme.of(context).textTheme.headline6),
           centerTitle: true,
-          backgroundColor: Colors.white,
+          backgroundColor: const Color(0xFFF8F9FB),
           elevation: isScrolledToTop ? 0.0 : 4.0,
         ),
         body: StreamBuilder(
