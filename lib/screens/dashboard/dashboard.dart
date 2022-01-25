@@ -14,6 +14,7 @@ import 'package:pr2/models/current_stream_publisher.dart';
 import 'package:pr2/screens/notification/alerts.dart';
 import 'package:pr2/screens/notification/notification_list.dart';
 import 'package:pr2/screens/past_data/past_data.dart';
+import 'package:pr2/screens/settings/settings.dart';
 import 'package:pr2/services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../notification.dart';
@@ -98,31 +99,20 @@ class _DashboardState extends State<Dashboard> {
       backgroundColor: const Color(0xFFF8F9FB),
       appBar: AppBar(
         actions: [
-          TextButton(
-              onPressed: () async {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                          content: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [CircularProgressIndicator()],
-                      ));
-                    });
-                final key = await _getTokenKey();
-                if (key != null) {
-                  DatabaseReference ref =
-                      _database.reference().child(PREFERENCES).child(TOKENS);
-                  await ref.update(
-                      {'$LIST/$key': null, DATE: ServerValue.timestamp});
-                }
-                await _removeTokenKey();
-                await _removeLastTokenRefreshTime();
-                await FirebaseMessaging.instance.deleteToken();
-                await _auth.signOut();
-                Navigator.pop(context);
-              },
-              child: const Text('Sign Out'))
+          IconButton(
+            onPressed: () async {
+              setState(() {
+                currentStream = null;
+              });
+              await Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => Settings()));
+              setState(() {
+                currentStream = CurrentStreamPublisher().getCurrentStream();
+              });
+            },
+            icon: const Icon(Icons.settings_outlined),
+            color: Colors.black87,
+          ),
         ],
         title: Text(widget.title, style: Theme.of(context).textTheme.headline6),
         centerTitle: true,
