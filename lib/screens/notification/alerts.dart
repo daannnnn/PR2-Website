@@ -112,60 +112,72 @@ class _AlertsState extends State<Alerts> {
                       itemCount: alerts.length,
                       itemBuilder: (context, index) {
                         Alert alert = alerts[index];
-                        return GestureDetector(
-                          onTap: () async {
-                            await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => AddEditAlert(
-                                          add: false,
-                                          id: alert.id,
-                                          factor: alert.factor,
-                                          onIncrease: alert.onIncrease,
-                                          value: alert.value.toDouble(),
-                                        )));
-                          },
-                          child: CustomCard(
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 8.0,
-                                    height: 8.0,
-                                    decoration: BoxDecoration(
-                                      color: alert.factor.color,
-                                      shape: BoxShape.circle,
+                        return Stack(
+                          alignment: Alignment.center,
+                          children: <Widget>[
+                            CustomCard(
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 8.0,
+                                      height: 8.0,
+                                      decoration: BoxDecoration(
+                                        color: alert.factor.color,
+                                        shape: BoxShape.circle,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(width: 8.0),
-                                  Text(
-                                    alert.factor.name,
-                                    style:
-                                        Theme.of(context).textTheme.bodyText1,
-                                  ),
-                                  const Spacer(),
-                                  Text(
-                                    "${alert.value / alert.factor.divider} ${alert.factor.sign}",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1
-                                        ?.copyWith(fontWeight: FontWeight.bold),
-                                  ),
-                                  const SizedBox(width: 8.0),
-                                  alert.onIncrease
-                                      ? const Icon(
-                                          Icons.arrow_drop_up,
-                                          color: Color(0xFF00FF88),
-                                        )
-                                      : const Icon(
-                                          Icons.arrow_drop_down,
-                                          color: Color(0xFFFF6161),
-                                        ),
-                                ],
+                                    const SizedBox(width: 8.0),
+                                    Text(
+                                      alert.factor.name,
+                                      style:
+                                          Theme.of(context).textTheme.bodyText1,
+                                    ),
+                                    const Spacer(),
+                                    Text(
+                                      "${alert.value / alert.factor.divider} ${alert.factor.sign}",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyText1
+                                          ?.copyWith(
+                                              fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(width: 8.0),
+                                    alert.onIncrease
+                                        ? const Icon(
+                                            Icons.arrow_drop_up,
+                                            color: Color(0xFF00FF88),
+                                          )
+                                        : const Icon(
+                                            Icons.arrow_drop_down,
+                                            color: Color(0xFFFF6161),
+                                          ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
+                            Positioned.fill(
+                              child: Material(
+                                color: Colors.transparent,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  onTap: () async {
+                                    await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => AddEditAlert(
+                                                  add: false,
+                                                  id: alert.id,
+                                                  factor: alert.factor,
+                                                  onIncrease: alert.onIncrease,
+                                                  value: alert.value.toDouble(),
+                                                )));
+                                  },
+                                ),
+                              ),
+                            )
+                          ],
                         );
                       },
                       controller: scrollController,

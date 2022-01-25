@@ -135,75 +135,99 @@ class _AddEditAlertState extends State<AddEditAlert> {
               Row(
                 children: [
                   Flexible(
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          onIncrease = onIncrease ?? false ? null : true;
-                        });
-                      },
-                      child: CustomCard(
-                        color: onIncrease ?? false
-                            ? Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withAlpha(40)
-                            : Colors.white,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.arrow_drop_up,
-                                color: Color(0xFF00FF88),
-                              ),
-                              const SizedBox(width: 8.0),
-                              Text(
-                                'Above'.toUpperCase(),
-                                style: Theme.of(context).textTheme.button,
-                              ),
-                              const SizedBox(width: 8.0),
-                            ],
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: <Widget>[
+                        CustomCard(
+                          color: onIncrease ?? false
+                              ? Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withAlpha(40)
+                              : Colors.white,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.arrow_drop_up,
+                                  color: Color(0xFF00FF88),
+                                ),
+                                const SizedBox(width: 8.0),
+                                Text(
+                                  'Above'.toUpperCase(),
+                                  style: Theme.of(context).textTheme.button,
+                                ),
+                                const SizedBox(width: 8.0),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
+                        Positioned.fill(
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(12.0),
+                              onTap: () {
+                                setState(() {
+                                  onIncrease =
+                                      onIncrease ?? false ? null : true;
+                                });
+                              },
+                            ),
+                          ),
+                        )
+                      ],
                     ),
                     flex: 1,
                   ),
                   const SizedBox(width: 8.0),
                   Flexible(
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          onIncrease = onIncrease ?? true ? false : null;
-                        });
-                      },
-                      child: CustomCard(
-                        color: onIncrease ?? true
-                            ? Colors.white
-                            : Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withAlpha(40),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.arrow_drop_down,
-                                color: Color(0xFFFF6161),
-                              ),
-                              const SizedBox(width: 8.0),
-                              Text(
-                                'Below'.toUpperCase(),
-                                style: Theme.of(context).textTheme.button,
-                              ),
-                              const SizedBox(width: 8.0),
-                            ],
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: <Widget>[
+                        CustomCard(
+                          color: onIncrease ?? true
+                              ? Colors.white
+                              : Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withAlpha(40),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.arrow_drop_down,
+                                  color: Color(0xFFFF6161),
+                                ),
+                                const SizedBox(width: 8.0),
+                                Text(
+                                  'Below'.toUpperCase(),
+                                  style: Theme.of(context).textTheme.button,
+                                ),
+                                const SizedBox(width: 8.0),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
+                        Positioned.fill(
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(12.0),
+                              onTap: () {
+                                setState(() {
+                                  onIncrease =
+                                      onIncrease ?? true ? false : null;
+                                });
+                              },
+                            ),
+                          ),
+                        )
+                      ],
                     ),
                     flex: 1,
                   ),

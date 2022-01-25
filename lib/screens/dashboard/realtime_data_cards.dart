@@ -82,46 +82,78 @@ class RealtimeDataCards extends StatelessWidget {
               padding: const EdgeInsets.only(left: 8.0, right: 8.0),
               child: Column(
                 children: [
-                  GestureDetector(
-                    onTap: goToNotifications,
-                    child: CustomCard(
-                      child: Row(
-                        children: [
-                          const SizedBox(width: 8.0),
-                          Icon(
-                            Icons.notifications_outlined,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                          const SizedBox(width: 8.0),
-                          Text(
-                            'Notifications',
-                            style: Theme.of(context).textTheme.button?.copyWith(
-                                color: Theme.of(context).colorScheme.primary),
-                          )
-                        ],
+                  Stack(
+                    alignment: Alignment.center,
+                    children: <Widget>[
+                      CustomCard(
+                        child: Row(
+                          children: [
+                            const SizedBox(width: 8.0),
+                            Icon(
+                              Icons.notifications_outlined,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            const SizedBox(width: 8.0),
+                            Text(
+                              'Notifications',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .button
+                                  ?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
+                      Positioned.fill(
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12.0),
+                            onTap: goToNotifications,
+                          ),
+                        ),
+                      )
+                    ],
                   ),
                   const SizedBox(height: 8.0),
-                  GestureDetector(
-                    onTap: goToEditAlerts,
-                    child: CustomCard(
-                      child: Row(
-                        children: [
-                          const SizedBox(width: 8.0),
-                          Icon(
-                            Icons.notifications_outlined,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                          const SizedBox(width: 8.0),
-                          Text(
-                            'Edit Alerts',
-                            style: Theme.of(context).textTheme.button?.copyWith(
-                                color: Theme.of(context).colorScheme.primary),
-                          )
-                        ],
+                  Stack(
+                    alignment: Alignment.center,
+                    children: <Widget>[
+                      CustomCard(
+                        child: Row(
+                          children: [
+                            const SizedBox(width: 8.0),
+                            Icon(
+                              Icons.edit_outlined,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            const SizedBox(width: 8.0),
+                            Text(
+                              'Edit Alerts',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .button
+                                  ?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
+                      Positioned.fill(
+                        child: Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(12.0),
+                            onTap: goToEditAlerts,
+                          ),
+                        ),
+                      )
+                    ],
                   ),
                 ],
               ),
