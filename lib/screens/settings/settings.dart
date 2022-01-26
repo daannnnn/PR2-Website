@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pr2/screens/settings/preferences/preferences.dart';
 
 class Settings extends StatefulWidget {
   const Settings({Key? key}) : super(key: key);
@@ -57,7 +58,12 @@ class _SettingsState extends State<Settings> {
         child: Column(
           children: [
             InkWell(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const Preferences()));
+              },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 16.0),
                 child: Row(
