@@ -46,6 +46,7 @@ class _PastDataState extends State<PastData> {
           if (snapshot.hasData) {
             List<DaySensorData> data = snapshot.data as List<DaySensorData>;
             return ListView.separated(
+              physics: const BouncingScrollPhysics(),
               padding: const EdgeInsets.all(24.0),
               separatorBuilder: (context, index) {
                 return const SizedBox(
