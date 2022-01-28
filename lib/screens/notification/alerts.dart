@@ -1,11 +1,14 @@
 import 'dart:ui';
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:pr2/components/custom_card.dart';
+import 'package:pr2/constants.dart';
 import 'package:pr2/models/alert.dart';
 import 'package:pr2/models/alerts_list_stream_publisher.dart';
 import 'package:pr2/models/factor.dart';
 import 'package:pr2/screens/notification/add_edit_alert.dart';
+import 'package:pr2/screens/notification/alert_card.dart';
 
 class Alerts extends StatefulWidget {
   const Alerts({Key? key}) : super(key: key);
@@ -15,6 +18,8 @@ class Alerts extends StatefulWidget {
 }
 
 class _AlertsState extends State<Alerts> {
+  final _database = FirebaseDatabase.instance;
+
   late ScrollController scrollController;
   bool isScrolledToTop = true;
 
@@ -78,6 +83,8 @@ class _AlertsState extends State<Alerts> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 alerts = snapshot.data as List<Alert>;
+              } else {
+                alerts = List.empty();
               }
               return SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
@@ -93,7 +100,9 @@ class _AlertsState extends State<Alerts> {
                               text: alerts.length.toString(),
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold)),
-                          const TextSpan(text: ' Alerts Set'),
+                          TextSpan(
+                              text:
+                                  ' ${alerts.length == 1 ? 'Alert' : 'Alerts'} Set'),
                         ],
                       ),
                     ),
@@ -112,73 +121,7 @@ class _AlertsState extends State<Alerts> {
                       itemCount: alerts.length,
                       itemBuilder: (context, index) {
                         Alert alert = alerts[index];
-                        return Stack(
-                          alignment: Alignment.center,
-                          children: <Widget>[
-                            CustomCard(
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 8.0,
-                                      height: 8.0,
-                                      decoration: BoxDecoration(
-                                        color: alert.factor.color,
-                                        shape: BoxShape.circle,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8.0),
-                                    Text(
-                                      alert.factor.name,
-                                      style:
-                                          Theme.of(context).textTheme.bodyText1,
-                                    ),
-                                    const Spacer(),
-                                    Text(
-                                      "${alert.value / alert.factor.divider} ${alert.factor.sign}",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyText1
-                                          ?.copyWith(
-                                              fontWeight: FontWeight.bold),
-                                    ),
-                                    const SizedBox(width: 8.0),
-                                    alert.onIncrease
-                                        ? const Icon(
-                                            Icons.arrow_drop_up,
-                                            color: Color(0xFF00FF88),
-                                          )
-                                        : const Icon(
-                                            Icons.arrow_drop_down,
-                                            color: Color(0xFFFF6161),
-                                          ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Positioned.fill(
-                              child: Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  onTap: () async {
-                                    await Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => AddEditAlert(
-                                                  add: false,
-                                                  id: alert.id,
-                                                  factor: alert.factor,
-                                                  onIncrease: alert.onIncrease,
-                                                  value: alert.value.toDouble(),
-                                                )));
-                                  },
-                                ),
-                              ),
-                            )
-                          ],
-                        );
+                        return AlertCard(alert: alert, database: _database);
                       },
                     ),
                   ],
