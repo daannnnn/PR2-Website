@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pr2/screens/settings/notifications/notifications.dart';
 import 'package:pr2/screens/settings/preferences/preferences.dart';
 
 class Settings extends StatefulWidget {
@@ -79,7 +80,12 @@ class _SettingsState extends State<Settings> {
               ),
             ),
             InkWell(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const Notifications()));
+              },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 16.0),
                 child: Row(
