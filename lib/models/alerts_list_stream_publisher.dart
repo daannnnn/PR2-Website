@@ -16,7 +16,7 @@ class AlertsListStreamPublisher {
         Alert alert = Alert.fromRTDB(key, Map<String, dynamic>.from(value));
         list.add(alert);
       });
-      return list;
+      return list.reversed.toList();
     });
     return stream;
   }
