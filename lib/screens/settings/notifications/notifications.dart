@@ -100,10 +100,12 @@ class _NotificationsState extends State<Notifications> {
             final deviceTokens = list[1].value != null
                 ? Map<String, dynamic>.from(list[1].value)
                 : null;
-            final infoTokens = Map<String, dynamic>.from(list[2].value ?? '{}');
 
             updateTime = tokens[DATE];
-            deviceLastUpdateTime = infoTokens[DATE];
+            final millis = int.tryParse(list[2].toString());
+            if (millis != null) {
+              deviceLastUpdateTime = millis;
+            }
 
             this.tokens.clear();
             this.deviceTokens.clear();
@@ -296,7 +298,7 @@ class _NotificationsState extends State<Notifications> {
         .map((event) => event.snapshot);
     Stream<DataSnapshot> stream3 = baseDatabaseRef
         .child(UPDATE_INFO)
-        .child(TOKENS)
+        .child(DATE)
         .onValue
         .map((event) => event.snapshot);
     return CombineLatestStream.list([

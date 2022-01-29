@@ -137,10 +137,12 @@ class _PreferencesState extends State<Preferences> {
 
             final userPref = Map<String, dynamic>.from(list[0].value);
             final deviceUserPref = Map<String, dynamic>.from(list[1].value);
-            final infoUserPref = Map<String, dynamic>.from(list[2].value);
 
             updateTime = userPref[DATE];
-            deviceLastUpdateTime = infoUserPref[DATE];
+            final millis = int.tryParse(list[2].toString());
+            if (millis != null) {
+              deviceLastUpdateTime = millis;
+            }
 
             updateInterval =
                 (double.tryParse(userPref[UPDATE_INTERVAL].toString()) ?? -1) /
@@ -213,7 +215,7 @@ class _PreferencesState extends State<Preferences> {
         .map((event) => event.snapshot);
     Stream<DataSnapshot> stream3 = baseDatabaseRef
         .child(UPDATE_INFO)
-        .child(USER_PREF)
+        .child(DATE)
         .onValue
         .map((event) => event.snapshot);
     return CombineLatestStream.list([
