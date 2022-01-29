@@ -4,15 +4,15 @@ import 'package:pr2/components/custom_card.dart';
 import 'package:pr2/models/alert.dart';
 import 'package:pr2/models/factor.dart';
 
-import '../../constants.dart';
-import 'add_edit_alert.dart';
+import '../../../constants.dart';
+import '../add_edit_alert.dart';
 
 class AlertCard extends StatelessWidget {
   const AlertCard({Key? key, required this.alert, required this.database})
       : super(key: key);
 
   final FirebaseDatabase database;
-  final Alert alert;
+  final AlertWithState alert;
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +20,11 @@ class AlertCard extends StatelessWidget {
       alignment: Alignment.center,
       children: <Widget>[
         CustomCard(
+          color: (alert.state == AlertState.pendingSet)
+              ? Colors.greenAccent.withAlpha(40)
+              : (alert.state == AlertState.pendingDelete)
+                  ? Colors.redAccent.withAlpha(40)
+                  : Colors.white,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
@@ -77,6 +82,7 @@ class AlertCard extends StatelessWidget {
                             )));
               },
               onLongPress: () {
+                if (alert.state == AlertState.pendingDelete) return;
                 AlertDialog alertDialogDeleting = AlertDialog(
                     content: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

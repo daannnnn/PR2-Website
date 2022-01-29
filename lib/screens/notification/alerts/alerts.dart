@@ -8,7 +8,9 @@ import 'package:pr2/models/alert.dart';
 import 'package:pr2/models/alerts_list_stream_publisher.dart';
 import 'package:pr2/models/factor.dart';
 import 'package:pr2/screens/notification/add_edit_alert.dart';
-import 'package:pr2/screens/notification/alert_card.dart';
+import 'package:pr2/screens/notification/alerts/alert_card.dart';
+import 'package:pr2/screens/notification/alerts/alerts_pending_update_card.dart';
+import 'package:pr2/screens/notification/alerts/alerts_updated_card.dart';
 
 class Alerts extends StatefulWidget {
   const Alerts({Key? key}) : super(key: key);
@@ -23,10 +25,16 @@ class _AlertsState extends State<Alerts> {
   late ScrollController scrollController;
   bool isScrolledToTop = true;
 
-  Stream<List<Alert>>? alertsListStream =
+  Stream<dynamic>? alertsListStream =
       AlertsListStreamPublisher().getAlertsListStream();
 
-  List<Alert> alerts = List.empty();
+  List<AlertWithState> combinedAlerts = List.empty();
+  List<AlertWithState> alertsPendingSet = List.empty();
+  List<AlertWithState> alertsPendingDelete = List.empty();
+  List<Alert> alertsOk = List.empty();
+
+  int activeAlertCount = 0;
+  DateTime deviceLastUpdateTime = DateTime.now();
 
   @override
   void initState() {
@@ -82,9 +90,39 @@ class _AlertsState extends State<Alerts> {
             stream: alertsListStream,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                alerts = snapshot.data as List<Alert>;
+                final list = snapshot.data as List<dynamic>;
+                alertsPendingSet = (list[0] as List<Alert>)
+                    .where((element) => !list[1].contains(element))
+                    .map((e) => AlertWithState.fromAlert(
+                        state: AlertState.pendingSet, alert: e))
+                    .toList();
+                alertsPendingDelete = (list[1] as List<Alert>)
+                    .where((element) => !list[0].contains(element))
+                    .map((e) => AlertWithState.fromAlert(
+                        state: AlertState.pendingDelete, alert: e))
+                    .toList();
+                alertsOk = List.from(list[0] as List<Alert>);
+                alertsOk.removeWhere((item) => !list[1].contains(item));
+
+                combinedAlerts = [
+                  alertsPendingSet,
+                  alertsPendingDelete,
+                  alertsOk
+                      .map((e) => AlertWithState.fromAlert(
+                          state: AlertState.ok, alert: e))
+                      .toList(),
+                ].expand((x) => x).toList();
+                combinedAlerts.sort((a, b) => b.id.compareTo(a.id));
+
+                activeAlertCount = alertsOk.length + alertsPendingDelete.length;
+
+                final millis = int.tryParse(list[2].toString());
+                if (millis != null) {
+                  deviceLastUpdateTime =
+                      DateTime.fromMillisecondsSinceEpoch(millis);
+                }
               } else {
-                alerts = List.empty();
+                combinedAlerts = List.empty();
               }
               return SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
@@ -92,23 +130,30 @@ class _AlertsState extends State<Alerts> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    (alertsPendingDelete.isNotEmpty ||
+                            alertsPendingSet.isNotEmpty)
+                        ? AlertsPendingUpdateCard(
+                            deviceLastUpdateTime: deviceLastUpdateTime,
+                            pendingSetAlertCount: alertsPendingSet.length,
+                            pendingDeleteAlertCount: alertsPendingDelete.length,
+                          )
+                        : const AlertsUpdatedCard(),
+                    const SizedBox(height: 24.0),
                     RichText(
                       text: TextSpan(
                         style: Theme.of(context).textTheme.headline5,
                         children: [
                           TextSpan(
-                              text: alerts.length.toString(),
+                              text: activeAlertCount.toString(),
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold)),
                           TextSpan(
                               text:
-                                  ' ${alerts.length == 1 ? 'Alert' : 'Alerts'} Set'),
+                                  ' ${activeAlertCount == 1 ? 'alert' : 'alerts'} currently active'),
                         ],
                       ),
                     ),
-                    const SizedBox(
-                      height: 24.0,
-                    ),
+                    const SizedBox(height: 16.0),
                     ListView.separated(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
@@ -118,9 +163,9 @@ class _AlertsState extends State<Alerts> {
                         );
                       },
                       padding: const EdgeInsets.only(bottom: 64.0),
-                      itemCount: alerts.length,
+                      itemCount: combinedAlerts.length,
                       itemBuilder: (context, index) {
-                        Alert alert = alerts[index];
+                        AlertWithState alert = combinedAlerts[index];
                         return AlertCard(alert: alert, database: _database);
                       },
                     ),

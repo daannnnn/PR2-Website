@@ -1,9 +1,9 @@
+import 'package:equatable/equatable.dart';
 import 'package:pr2/constants.dart';
-import 'package:pr2/notification.dart';
 
 import 'factor.dart';
 
-class Alert {
+class Alert extends Equatable {
   final String id;
   final Factor factor;
   final int value;
@@ -24,4 +24,40 @@ class Alert {
       onIncrease: data[ON_INCREASE],
     );
   }
+
+  @override
+  List<Object?> get props => [id, factor, value, onIncrease];
+}
+
+class AlertWithState extends Alert {
+  final AlertState state;
+
+  AlertWithState({
+    required this.state,
+    required id,
+    required factor,
+    required value,
+    required onIncrease,
+  }) : super(
+          id: id,
+          factor: factor,
+          value: value,
+          onIncrease: onIncrease,
+        );
+
+  AlertWithState.fromAlert({
+    required this.state,
+    required Alert alert,
+  }) : super(
+          id: alert.id,
+          factor: alert.factor.key,
+          value: alert.value,
+          onIncrease: alert.onIncrease,
+        );
+}
+
+enum AlertState {
+  ok,
+  pendingSet,
+  pendingDelete,
 }

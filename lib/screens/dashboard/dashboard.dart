@@ -11,7 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:pr2/constants.dart';
 import 'package:pr2/models/current.dart';
 import 'package:pr2/models/current_stream_publisher.dart';
-import 'package:pr2/screens/notification/alerts.dart';
+import 'package:pr2/screens/notification/alerts/alerts.dart';
 import 'package:pr2/screens/notification/notification_list.dart';
 import 'package:pr2/screens/past_data/past_data.dart';
 import 'package:pr2/screens/settings/settings.dart';
