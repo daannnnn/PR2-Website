@@ -1,8 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pr2/models/alert_notification.dart';
 import 'package:pr2/models/alert_notifications_list_stream_publisher.dart';
 import 'package:pr2/models/factor.dart';
+
+import '../../constants.dart';
 
 class NotificationList extends StatefulWidget {
   const NotificationList({Key? key}) : super(key: key);
@@ -12,11 +16,12 @@ class NotificationList extends StatefulWidget {
 }
 
 class _NotificationListState extends State<NotificationList> {
+  late DatabaseReference baseDatabaseRef;
+
   late ScrollController scrollController;
   bool isScrolledToTop = true;
 
-  Stream<List<AlertNotification>>? alertNotificationsListStream =
-      AlertNotificationsListStreamPublisher().getAlertNotificationsListStream();
+  late Stream<List<AlertNotification>> alertNotificationsListStream;
 
   List<AlertNotification> alertNotifications = List.empty();
 
@@ -25,6 +30,14 @@ class _NotificationListState extends State<NotificationList> {
   @override
   void initState() {
     super.initState();
+
+    final user = FirebaseAuth.instance.currentUser;
+    baseDatabaseRef = FirebaseDatabase.instance
+        .reference()
+        .child((user?.uid ?? '') + '/' + DATA);
+
+    alertNotificationsListStream = AlertNotificationsListStreamPublisher()
+        .getAlertNotificationsListStream(baseDatabaseRef);
 
     scrollController = ScrollController();
     scrollController.addListener(() {

@@ -5,11 +5,9 @@ import 'package:rxdart/rxdart.dart';
 import 'alert.dart';
 
 class AlertsListStreamPublisher {
-  final _database = FirebaseDatabase.instance.reference();
-
-  Stream<List<dynamic>> getAlertsListStream() {
+  Stream<List<dynamic>> getAlertsListStream(DatabaseReference baseRef) {
     final alertsListStream =
-        _database.child(PREFERENCES).child(ALERTS).child(LIST).onValue;
+        baseRef.child(PREFERENCES).child(ALERTS).child(LIST).onValue;
     final stream = alertsListStream.map((event) {
       if (event.snapshot.value == null) {
         return List<Alert>.empty(growable: true);
@@ -24,7 +22,7 @@ class AlertsListStreamPublisher {
     });
 
     final deviceAlertsListStream =
-        _database.child(DEVICE_PREFERENCES).child(ALERTS).child(LIST).onValue;
+        baseRef.child(DEVICE_PREFERENCES).child(ALERTS).child(LIST).onValue;
     final deviceStream = deviceAlertsListStream.map((event) {
       if (event.snapshot.value == null) {
         return List<Alert>.empty(growable: true);
@@ -37,8 +35,7 @@ class AlertsListStreamPublisher {
       });
       return list.reversed.toList();
     });
-    final dateStream = _database
-        .reference()
+    final dateStream = baseRef
         .child(UPDATE_INFO)
         .child(DATE)
         .onValue

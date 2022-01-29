@@ -1,4 +1,5 @@
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class Notifications extends StatefulWidget {
 }
 
 class _NotificationsState extends State<Notifications> {
-  final _database = FirebaseDatabase.instance;
+  late DatabaseReference baseDatabaseRef;
 
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
@@ -39,6 +40,11 @@ class _NotificationsState extends State<Notifications> {
   @override
   void initState() {
     super.initState();
+
+    final user = FirebaseAuth.instance.currentUser;
+    baseDatabaseRef = FirebaseDatabase.instance
+        .reference()
+        .child((user?.uid ?? '') + '/' + DATA);
 
     _getTokenKey().then((value) {
       setState(() {
@@ -186,8 +192,7 @@ class _NotificationsState extends State<Notifications> {
                                     ],
                                   ));
                                 });
-                            final ref = _database
-                                .reference()
+                            final ref = baseDatabaseRef
                                 .child(PREFERENCES)
                                 .child(TOKENS)
                                 .child(LIST)
@@ -279,20 +284,17 @@ class _NotificationsState extends State<Notifications> {
   }
 
   Stream<List<DataSnapshot>> getData() {
-    Stream<DataSnapshot> stream1 = _database
-        .reference()
+    Stream<DataSnapshot> stream1 = baseDatabaseRef
         .child(PREFERENCES)
         .child(TOKENS)
         .onValue
         .map((event) => event.snapshot);
-    Stream<DataSnapshot> stream2 = _database
-        .reference()
+    Stream<DataSnapshot> stream2 = baseDatabaseRef
         .child(DEVICE_PREFERENCES)
         .child(TOKENS)
         .onValue
         .map((event) => event.snapshot);
-    Stream<DataSnapshot> stream3 = _database
-        .reference()
+    Stream<DataSnapshot> stream3 = baseDatabaseRef
         .child(UPDATE_INFO)
         .child(TOKENS)
         .onValue

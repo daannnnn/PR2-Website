@@ -1,14 +1,13 @@
-import 'package:fl_chart/fl_chart.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pr2/chart/sensor_values_line_chart/day_summary_line_chart.dart';
-import 'package:pr2/chart/sensor_values_line_chart/sensor_line_chart_bar_data.dart';
-import 'package:pr2/chart/sensor_values_line_chart/sensor_value_spot.dart';
-import 'package:pr2/chart/sensor_values_line_chart/sensor_value_type.dart';
 import 'package:pr2/models/day_sensor_data.dart';
 import 'package:pr2/models/past_data_future.dart';
-import 'package:pr2/models/past_sensor_data.dart';
 import 'package:pr2/screens/dashboard/sensor_data_row.dart';
+
+import '../../constants.dart';
 
 class PastData extends StatefulWidget {
   const PastData({Key? key}) : super(key: key);
@@ -18,10 +17,24 @@ class PastData extends StatefulWidget {
 }
 
 class _PastDataState extends State<PastData> {
+  late DatabaseReference baseDatabaseRef;
+
   late ScrollController scrollController;
   bool isScrolledToTop = true;
 
-  final pastDataFuture = PastDataFuture().getPastDataFuture();
+  late Future<List<DaySensorData>> pastDataFuture;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final user = FirebaseAuth.instance.currentUser;
+    baseDatabaseRef = FirebaseDatabase.instance
+        .reference()
+        .child((user?.uid ?? '') + '/' + DATA);
+
+    pastDataFuture = PastDataFuture().getPastDataFuture(baseDatabaseRef);
+  }
 
   @override
   Widget build(BuildContext context) {

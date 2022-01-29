@@ -5,10 +5,11 @@ import 'package:pr2/models/past_sensor_data.dart';
 import '../constants.dart';
 
 class PastDataFuture {
-  final _database = FirebaseDatabase.instance.reference();
-
-  Future<List<DaySensorData>> getPastDataFuture() async {
-    final pastData = await _database.child(VALUES).orderByChild(DATE).once();
+  Future<List<DaySensorData>> getPastDataFuture(
+    DatabaseReference baseDatabaseRef,
+  ) async {
+    final pastData =
+        await baseDatabaseRef.child(VALUES).orderByChild(DATE).once();
 
     List<DaySensorData> result = List.empty(growable: true);
 

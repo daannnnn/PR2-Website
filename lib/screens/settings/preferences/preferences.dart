@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:pr2/screens/settings/preferences/preferences_updated_card.dart';
@@ -14,7 +15,7 @@ class Preferences extends StatefulWidget {
 }
 
 class _PreferencesState extends State<Preferences> {
-  final _database = FirebaseDatabase.instance;
+  late DatabaseReference baseDatabaseRef;
 
   late ScrollController scrollController;
   bool isScrolledToTop = true;
@@ -31,6 +32,11 @@ class _PreferencesState extends State<Preferences> {
   @override
   void initState() {
     super.initState();
+
+    final user = FirebaseAuth.instance.currentUser;
+    baseDatabaseRef = FirebaseDatabase.instance
+        .reference()
+        .child((user?.uid ?? '') + '/' + DATA);
 
     scrollController = ScrollController();
     scrollController.addListener(() {
@@ -91,8 +97,7 @@ class _PreferencesState extends State<Preferences> {
                       ],
                     ));
                   });
-              final ref =
-                  _database.reference().child(PREFERENCES).child(USER_PREF);
+              final ref = baseDatabaseRef.child(PREFERENCES).child(USER_PREF);
 
               int count = 0;
               await ref
@@ -196,20 +201,17 @@ class _PreferencesState extends State<Preferences> {
   }
 
   Stream<List<DataSnapshot>> getDateData() {
-    Stream<DataSnapshot> stream1 = _database
-        .reference()
+    Stream<DataSnapshot> stream1 = baseDatabaseRef
         .child(PREFERENCES)
         .child(USER_PREF)
         .onValue
         .map((event) => event.snapshot);
-    Stream<DataSnapshot> stream2 = _database
-        .reference()
+    Stream<DataSnapshot> stream2 = baseDatabaseRef
         .child(DEVICE_PREFERENCES)
         .child(USER_PREF)
         .onValue
         .map((event) => event.snapshot);
-    Stream<DataSnapshot> stream3 = _database
-        .reference()
+    Stream<DataSnapshot> stream3 = baseDatabaseRef
         .child(UPDATE_INFO)
         .child(USER_PREF)
         .onValue

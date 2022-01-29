@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -7,14 +8,14 @@ import 'package:pr2/models/factor.dart';
 import 'package:pr2/screens/notification/factor_card.dart';
 
 class AddEditAlert extends StatefulWidget {
-  const AddEditAlert(
-      {Key? key,
-      required this.add,
-      this.id,
-      this.factor,
-      this.onIncrease,
-      this.value})
-      : title = add ? 'Add Alert' : 'Edit Alert',
+  const AddEditAlert({
+    Key? key,
+    required this.add,
+    this.id,
+    this.factor,
+    this.onIncrease,
+    this.value,
+  })  : title = add ? 'Add Alert' : 'Edit Alert',
         super(key: key);
 
   final bool add;
@@ -30,6 +31,8 @@ class AddEditAlert extends StatefulWidget {
 }
 
 class _AddEditAlertState extends State<AddEditAlert> {
+  late DatabaseReference baseDatabaseRef;
+
   Factor? factor;
   final valueController = TextEditingController();
   bool? onIncrease;
@@ -39,6 +42,12 @@ class _AddEditAlertState extends State<AddEditAlert> {
   @override
   void initState() {
     super.initState();
+
+    final user = FirebaseAuth.instance.currentUser;
+    baseDatabaseRef = FirebaseDatabase.instance
+        .reference()
+        .child((user?.uid ?? '') + '/' + DATA);
+
     factor = widget.factor;
     onIncrease = widget.onIncrease;
     valueController.text = widget.value != null
@@ -75,10 +84,7 @@ class _AddEditAlertState extends State<AddEditAlert> {
                         ],
                       ));
                     });
-                final ref = FirebaseDatabase.instance
-                    .reference()
-                    .child(PREFERENCES)
-                    .child(ALERTS);
+                final ref = baseDatabaseRef.child(PREFERENCES).child(ALERTS);
                 final key = widget.add ? ref.push().key : widget.id;
 
                 int count = 0;

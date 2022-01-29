@@ -5,14 +5,13 @@ import 'package:pr2/models/past_sensor_data.dart';
 import '../constants.dart';
 
 class LastDaySummaryFuture {
-  final _database = FirebaseDatabase.instance.reference();
-
-  Future<DaySummary?> getLastDaySummaryFuture() async {
+  Future<DaySummary?> getLastDaySummaryFuture(
+      DatabaseReference baseDatabaseReference) async {
     final endAt =
         ((DateTime.now().millisecondsSinceEpoch / 1000 / 60 / 60 / 24).floor() *
                 24) -
             1;
-    final lastUpdate = await _database
+    final lastUpdate = await baseDatabaseReference
         .child(VALUES)
         .orderByChild(DATE)
         .endAt(endAt)
@@ -30,7 +29,7 @@ class LastDaySummaryFuture {
       final initial = ((lastDate / 24).floor() * 24);
       final last = initial + 23;
 
-      final data = await _database
+      final data = await baseDatabaseReference
           .child(VALUES)
           .orderByChild(DATE)
           .startAt(initial)

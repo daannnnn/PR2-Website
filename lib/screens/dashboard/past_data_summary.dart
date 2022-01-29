@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pr2/models/day_summary.dart';
@@ -6,10 +7,17 @@ import 'package:pr2/models/last_day_summary_future.dart';
 import 'day_summary_card.dart';
 
 class PastDataSummary extends StatelessWidget {
-  PastDataSummary({Key? key, required this.goToPastData}) : super(key: key);
+  PastDataSummary({
+    Key? key,
+    required this.goToPastData,
+    required this.baseDatabaseRef,
+  })  : lastDaySummaryFuture =
+            LastDaySummaryFuture().getLastDaySummaryFuture(baseDatabaseRef),
+        super(key: key);
 
+  final DatabaseReference baseDatabaseRef;
   final Function() goToPastData;
-  final lastDaySummaryFuture = LastDaySummaryFuture().getLastDaySummaryFuture();
+  final Future<DaySummary?> lastDaySummaryFuture;
 
   @override
   Widget build(BuildContext context) {

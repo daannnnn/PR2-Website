@@ -4,10 +4,10 @@ import 'package:pr2/models/alert_notification.dart';
 import '../constants.dart';
 
 class AlertNotificationsListStreamPublisher {
-  final _database = FirebaseDatabase.instance.reference();
-
-  Stream<List<AlertNotification>> getAlertNotificationsListStream() {
-    final alertNotificationsListStream = _database.child(ALERT_LIST).onValue;
+  Stream<List<AlertNotification>> getAlertNotificationsListStream(
+      DatabaseReference baseDatabaseRef) {
+    final alertNotificationsListStream =
+        baseDatabaseRef.child(ALERT_LIST).onValue;
     final stream = alertNotificationsListStream.map((event) {
       final list = List<AlertNotification>.empty(growable: true);
       final map = Map<String, dynamic>.from(event.snapshot.value);

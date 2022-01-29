@@ -1,5 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
+const String DATA = 'data';
+
 const String CURRENT = 'a';
 const String TOTAL = 'b';
 const String VALUES = 'c';

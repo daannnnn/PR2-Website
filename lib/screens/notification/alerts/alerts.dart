@@ -1,12 +1,9 @@
-import 'dart:ui';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:pr2/components/custom_card.dart';
 import 'package:pr2/constants.dart';
 import 'package:pr2/models/alert.dart';
 import 'package:pr2/models/alerts_list_stream_publisher.dart';
-import 'package:pr2/models/factor.dart';
 import 'package:pr2/screens/notification/add_edit_alert.dart';
 import 'package:pr2/screens/notification/alerts/alert_card.dart';
 import 'package:pr2/screens/notification/alerts/alerts_pending_update_card.dart';
@@ -20,13 +17,12 @@ class Alerts extends StatefulWidget {
 }
 
 class _AlertsState extends State<Alerts> {
-  final _database = FirebaseDatabase.instance;
+  late DatabaseReference baseDatabaseRef;
 
   late ScrollController scrollController;
   bool isScrolledToTop = true;
 
-  Stream<dynamic>? alertsListStream =
-      AlertsListStreamPublisher().getAlertsListStream();
+  late Stream<dynamic>? alertsListStream;
 
   List<AlertWithState> combinedAlerts = List.empty();
   List<AlertWithState> alertsPendingSet = List.empty();
@@ -39,6 +35,14 @@ class _AlertsState extends State<Alerts> {
   @override
   void initState() {
     super.initState();
+
+    final user = FirebaseAuth.instance.currentUser;
+    baseDatabaseRef = FirebaseDatabase.instance
+        .reference()
+        .child((user?.uid ?? '') + '/' + DATA);
+
+    alertsListStream =
+        AlertsListStreamPublisher().getAlertsListStream(baseDatabaseRef);
 
     scrollController = ScrollController();
     scrollController.addListener(() {
@@ -166,7 +170,8 @@ class _AlertsState extends State<Alerts> {
                       itemCount: combinedAlerts.length,
                       itemBuilder: (context, index) {
                         AlertWithState alert = combinedAlerts[index];
-                        return AlertCard(alert: alert, database: _database);
+                        return AlertCard(
+                            alert: alert, baseDatabaseRef: baseDatabaseRef);
                       },
                     ),
                   ],

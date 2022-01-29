@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -31,8 +32,8 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  late DatabaseReference baseDatabaseRef;
   final AuthService _auth = AuthService();
-  final _database = FirebaseDatabase.instance;
 
   late ScrollController scrollController;
   bool isScrolledToTop = true;
@@ -47,6 +48,11 @@ class _DashboardState extends State<Dashboard> {
   void initState() {
     super.initState();
 
+    final user = FirebaseAuth.instance.currentUser;
+    baseDatabaseRef = FirebaseDatabase.instance
+        .reference()
+        .child((user?.uid ?? '') + '/' + DATA);
+
     try {
       if (Platform.isAndroid) {
         SchedulerBinding.instance
@@ -55,7 +61,7 @@ class _DashboardState extends State<Dashboard> {
       // ignore: empty_catches
     } catch (e) {}
 
-    currentStream = CurrentStreamPublisher().getCurrentStream();
+    currentStream = CurrentStreamPublisher().getCurrentStream(baseDatabaseRef);
     scrollController = ScrollController();
     scrollController.addListener(() {
       if (scrollController.offset <=
@@ -107,7 +113,8 @@ class _DashboardState extends State<Dashboard> {
               await Navigator.push(
                   context, MaterialPageRoute(builder: (context) => Settings()));
               setState(() {
-                currentStream = CurrentStreamPublisher().getCurrentStream();
+                currentStream =
+                    CurrentStreamPublisher().getCurrentStream(baseDatabaseRef);
               });
             },
             icon: const Icon(Icons.settings_outlined),
@@ -138,7 +145,8 @@ class _DashboardState extends State<Dashboard> {
                       MaterialPageRoute(
                           builder: (context) => const NotificationList()));
                   setState(() {
-                    currentStream = CurrentStreamPublisher().getCurrentStream();
+                    currentStream = CurrentStreamPublisher()
+                        .getCurrentStream(baseDatabaseRef);
                   });
                 },
                 goToEditAlerts: () async {
@@ -148,7 +156,8 @@ class _DashboardState extends State<Dashboard> {
                   await Navigator.push(context,
                       MaterialPageRoute(builder: (context) => const Alerts()));
                   setState(() {
-                    currentStream = CurrentStreamPublisher().getCurrentStream();
+                    currentStream = CurrentStreamPublisher()
+                        .getCurrentStream(baseDatabaseRef);
                   });
                 },
               ),
@@ -166,9 +175,11 @@ class _DashboardState extends State<Dashboard> {
                           builder: (context) => const PastData()));
                   // TODO: Check if element already exists.
                   setState(() {
-                    currentStream = CurrentStreamPublisher().getCurrentStream();
+                    currentStream = CurrentStreamPublisher()
+                        .getCurrentStream(baseDatabaseRef);
                   });
                 },
+                baseDatabaseRef: baseDatabaseRef,
               ),
             ],
           ),
@@ -214,8 +225,7 @@ class _DashboardState extends State<Dashboard> {
                   children: const [CircularProgressIndicator()],
                 ));
           });
-      DatabaseReference ref =
-          _database.reference().child(PREFERENCES).child(TOKENS);
+      DatabaseReference ref = baseDatabaseRef.child(PREFERENCES).child(TOKENS);
       final key = await _getTokenKey() ?? ref.child(LIST).push().key;
       final token = await FirebaseMessaging.instance.getToken();
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();

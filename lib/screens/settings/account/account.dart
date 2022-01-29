@@ -18,8 +18,8 @@ class Account extends StatefulWidget {
 }
 
 class _AccountState extends State<Account> {
+  late DatabaseReference baseDatabaseRef;
   final AuthService _auth = AuthService();
-  final _database = FirebaseDatabase.instance;
 
   late ScrollController scrollController;
   bool isScrolledToTop = true;
@@ -29,6 +29,11 @@ class _AccountState extends State<Account> {
   @override
   void initState() {
     super.initState();
+
+    final user = FirebaseAuth.instance.currentUser;
+    baseDatabaseRef = FirebaseDatabase.instance
+        .reference()
+        .child((user?.uid ?? '') + '/' + DATA);
 
     scrollController = ScrollController();
     scrollController.addListener(() {
@@ -105,10 +110,8 @@ class _AccountState extends State<Account> {
 
                     final key = await _getTokenKey();
                     if (key != null) {
-                      DatabaseReference ref = _database
-                          .reference()
-                          .child(PREFERENCES)
-                          .child(TOKENS);
+                      DatabaseReference ref =
+                          baseDatabaseRef.child(PREFERENCES).child(TOKENS);
                       await ref.update(
                           {'$LIST/$key': null, DATE: ServerValue.timestamp});
                     }

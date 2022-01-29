@@ -8,10 +8,11 @@ import '../../../constants.dart';
 import '../add_edit_alert.dart';
 
 class AlertCard extends StatelessWidget {
-  const AlertCard({Key? key, required this.alert, required this.database})
+  const AlertCard(
+      {Key? key, required this.alert, required this.baseDatabaseRef})
       : super(key: key);
 
-  final FirebaseDatabase database;
+  final DatabaseReference baseDatabaseRef;
   final AlertWithState alert;
 
   @override
@@ -109,11 +110,10 @@ class AlertCard extends StatelessWidget {
                                 builder: (context) {
                                   return alertDialogDeleting;
                                 });
-                            final ref = database
-                                .reference()
+                            await baseDatabaseRef
                                 .child(PREFERENCES)
-                                .child(ALERTS);
-                            await ref.update({
+                                .child(ALERTS)
+                                .update({
                               DATE: ServerValue.timestamp,
                               '$LIST/${alert.id}': null,
                             });
