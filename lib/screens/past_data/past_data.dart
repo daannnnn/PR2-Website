@@ -34,6 +34,25 @@ class _PastDataState extends State<PastData> {
         .child((user?.uid ?? '') + '/' + DATA);
 
     pastDataFuture = PastDataFuture().getPastDataFuture(baseDatabaseRef);
+
+    scrollController = ScrollController();
+    scrollController.addListener(() {
+      if (scrollController.offset <=
+              scrollController.position.minScrollExtent &&
+          !scrollController.position.outOfRange) {
+        if (!isScrolledToTop) {
+          setState(() {
+            isScrolledToTop = true;
+          });
+        }
+      } else {
+        if (scrollController.offset > 0 && isScrolledToTop) {
+          setState(() {
+            isScrolledToTop = false;
+          });
+        }
+      }
+    });
   }
 
   @override
@@ -59,6 +78,7 @@ class _PastDataState extends State<PastData> {
           if (snapshot.hasData) {
             List<DaySensorData> data = snapshot.data as List<DaySensorData>;
             return ListView.separated(
+              controller: scrollController,
               physics: const BouncingScrollPhysics(),
               padding: const EdgeInsets.all(24.0),
               separatorBuilder: (context, index) {
