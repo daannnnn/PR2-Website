@@ -82,10 +82,8 @@ class _SettingsState extends State<Settings> {
             ),
             InkWell(
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const Notifications()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => Notifications()));
               },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 16.0),

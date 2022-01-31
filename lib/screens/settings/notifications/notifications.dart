@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -12,7 +14,20 @@ import 'notifications_pending_update_card.dart';
 import 'notifications_updated_card.dart';
 
 class Notifications extends StatefulWidget {
-  const Notifications({Key? key}) : super(key: key);
+  Notifications({Key? key}) : super(key: key) {
+    try {
+      if (Platform.isAndroid) {
+        android = true;
+      } else {
+        android = false;
+      }
+      // ignore: empty_catches
+    } catch (e) {
+      android = false;
+    }
+  }
+
+  late final bool android;
 
   @override
   _NotificationsState createState() => _NotificationsState();
@@ -154,81 +169,90 @@ class _NotificationsState extends State<Notifications> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  AnimatedSize(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.linearToEaseOut,
-                    child: (updateTime < deviceLastUpdateTime) ||
-                            (sendNotifications == deviceSendNotifications)
-                        ? NotificationsUpdatedCard(
-                            sendNotifications: deviceSendNotifications,
-                          )
-                        : NotificationsPendingUpdateCard(
-                            deviceLastUpdateTime:
-                                DateTime.fromMillisecondsSinceEpoch(
-                                    deviceLastUpdateTime),
-                            currentSendNotifications: deviceSendNotifications,
-                            pendingSendNotifications: sendNotifications,
-                          ),
-                  ),
-                  const SizedBox(height: 24.0),
-                  Row(
-                    children: [
-                      Text(
-                        'Send notifications to this device',
-                        style: Theme.of(context).textTheme.bodyText1,
-                      ),
-                      const Spacer(),
-                      Switch(
-                          value: sendNotifications,
-                          onChanged: (b) async {
-                            if (tokenId == null) return;
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                      content: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: const [
-                                      CircularProgressIndicator(),
-                                      SizedBox(height: 16.0),
-                                      Text('Saving'),
-                                    ],
-                                  ));
-                                });
-                            final ref = baseDatabaseRef
-                                .child(PREFERENCES)
-                                .child(TOKENS)
-                                .child(LIST)
-                                .child(tokenId!);
+                  if (widget.android)
+                    Column(
+                      children: [
+                        AnimatedSize(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.linearToEaseOut,
+                          child: (updateTime < deviceLastUpdateTime) ||
+                                  (sendNotifications == deviceSendNotifications)
+                              ? NotificationsUpdatedCard(
+                                  sendNotifications: deviceSendNotifications,
+                                )
+                              : NotificationsPendingUpdateCard(
+                                  deviceLastUpdateTime:
+                                      DateTime.fromMillisecondsSinceEpoch(
+                                          deviceLastUpdateTime),
+                                  currentSendNotifications:
+                                      deviceSendNotifications,
+                                  pendingSendNotifications: sendNotifications,
+                                ),
+                        ),
+                        const SizedBox(height: 24.0),
+                        Row(
+                          children: [
+                            Text(
+                              'Send notifications to this device',
+                              style: Theme.of(context).textTheme.bodyText1,
+                            ),
+                            const Spacer(),
+                            Switch(
+                                value: sendNotifications,
+                                onChanged: (b) async {
+                                  if (tokenId == null) return;
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                            content: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: const [
+                                            CircularProgressIndicator(),
+                                            SizedBox(height: 16.0),
+                                            Text('Saving'),
+                                          ],
+                                        ));
+                                      });
+                                  final ref = baseDatabaseRef
+                                      .child(PREFERENCES)
+                                      .child(TOKENS)
+                                      .child(LIST)
+                                      .child(tokenId!);
 
-                            if (sendNotifications) {
-                              ref
-                                  .remove()
-                                  .then((value) => Navigator.pop(context))
-                                  .onError((error, stackTrace) => null);
-                            } else {
-                              final token =
-                                  await FirebaseMessaging.instance.getToken();
-                              final DeviceInfoPlugin deviceInfo =
-                                  DeviceInfoPlugin();
-                              final AndroidDeviceInfo androidInfo =
-                                  await deviceInfo.androidInfo;
-                              ref
-                                  .set({
-                                    DATE: ServerValue.timestamp,
-                                    TOKEN: token,
-                                    DEVICE_DETAIL: androidInfo.model
-                                  })
-                                  .then((value) => Navigator.pop(context))
-                                  .onError((error, stackTrace) => null);
-                            }
-                          })
-                    ],
-                  ),
-                  const SizedBox(height: 16.0),
-                  Divider(height: 1.0, color: Colors.grey.withOpacity(0.5)),
-                  const SizedBox(height: 16.0),
+                                  if (sendNotifications) {
+                                    ref
+                                        .remove()
+                                        .then((value) => Navigator.pop(context))
+                                        .onError((error, stackTrace) => null);
+                                  } else {
+                                    final token = await FirebaseMessaging
+                                        .instance
+                                        .getToken();
+                                    final DeviceInfoPlugin deviceInfo =
+                                        DeviceInfoPlugin();
+                                    final AndroidDeviceInfo androidInfo =
+                                        await deviceInfo.androidInfo;
+                                    ref
+                                        .set({
+                                          DATE: ServerValue.timestamp,
+                                          TOKEN: token,
+                                          DEVICE_DETAIL: androidInfo.model
+                                        })
+                                        .then((value) => Navigator.pop(context))
+                                        .onError((error, stackTrace) => null);
+                                  }
+                                })
+                          ],
+                        ),
+                        const SizedBox(height: 16.0),
+                        Divider(
+                            height: 1.0, color: Colors.grey.withOpacity(0.5)),
+                        const SizedBox(height: 16.0),
+                      ],
+                    ),
                   Text(
                     'Devices Receiving Notifications',
                     style: Theme.of(context)
@@ -237,47 +261,52 @@ class _NotificationsState extends State<Notifications> {
                         ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8.0),
-                  ListView.separated(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    separatorBuilder: (context, index) {
-                      return Divider(
-                          height: 1.0, color: Colors.grey.withOpacity(0.5));
-                    },
-                    padding: const EdgeInsets.only(left: 16.0),
-                    itemCount: deviceTokens.length,
-                    itemBuilder: (context, index) {
-                      final int i = tokens.indexWhere(
-                          (element) => element.id == deviceTokens[index].id);
-                      return Padding(
-                        padding: const EdgeInsets.only(
-                          top: 12.0,
-                          bottom: 12.0,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (deviceTokens[index].id == tokenId)
+                  if (deviceTokens.isNotEmpty)
+                    ListView.separated(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      separatorBuilder: (context, index) {
+                        return Divider(
+                            height: 1.0, color: Colors.grey.withOpacity(0.5));
+                      },
+                      padding: const EdgeInsets.only(left: 16.0),
+                      itemCount: deviceTokens.length,
+                      itemBuilder: (context, index) {
+                        final int i = tokens.indexWhere(
+                            (element) => element.id == deviceTokens[index].id);
+                        return Padding(
+                          padding: const EdgeInsets.only(
+                            top: 12.0,
+                            bottom: 12.0,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (deviceTokens[index].id == tokenId)
+                                Text(
+                                  'This device'.toUpperCase(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .caption
+                                      ?.copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary),
+                                ),
                               Text(
-                                'This device'.toUpperCase(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .caption
-                                    ?.copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary),
-                              ),
-                            Text(
-                              (i != -1) ? tokens[i].deviceDetail ?? 'NA' : 'NA',
-                              style: Theme.of(context).textTheme.subtitle2,
-                            )
-                          ],
-                        ),
-                      );
-                    },
-                    controller: scrollController,
-                  ),
+                                (i != -1)
+                                    ? tokens[i].deviceDetail ?? 'NA'
+                                    : 'NA',
+                                style: Theme.of(context).textTheme.subtitle2,
+                              )
+                            ],
+                          ),
+                        );
+                      },
+                      controller: scrollController,
+                    )
+                  else
+                    const Text('No devices yet'),
                 ],
               ),
             ),
