@@ -139,7 +139,7 @@ class _PreferencesState extends State<Preferences> {
             final deviceUserPref = Map<String, dynamic>.from(list[1].value);
 
             updateTime = userPref[DATE];
-            final millis = int.tryParse(list[2].toString());
+            final millis = int.tryParse(list[2].value.toString());
             if (millis != null) {
               deviceLastUpdateTime = millis;
             }

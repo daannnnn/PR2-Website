@@ -120,7 +120,8 @@ class _AlertsState extends State<Alerts> {
 
                 activeAlertCount = alertsOk.length + alertsPendingDelete.length;
 
-                final millis = int.tryParse(list[2].toString());
+                final millis =
+                    int.tryParse((list[2] as DataSnapshot).value.toString());
                 if (millis != null) {
                   deviceLastUpdateTime =
                       DateTime.fromMillisecondsSinceEpoch(millis);

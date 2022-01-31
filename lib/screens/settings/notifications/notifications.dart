@@ -102,7 +102,7 @@ class _NotificationsState extends State<Notifications> {
                 : null;
 
             updateTime = tokens[DATE];
-            final millis = int.tryParse(list[2].toString());
+            final millis = int.tryParse(list[2].value.toString());
             if (millis != null) {
               deviceLastUpdateTime = millis;
             }
