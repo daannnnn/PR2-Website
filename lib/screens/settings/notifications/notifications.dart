@@ -109,13 +109,15 @@ class _NotificationsState extends State<Notifications> {
 
             this.tokens.clear();
             this.deviceTokens.clear();
-            Map<String, dynamic>.from(tokens[LIST]).forEach((key, value) {
-              this.tokens.add(Token(
-                  id: key,
-                  date: DateTime.fromMillisecondsSinceEpoch(value[DATE]),
-                  token: value[TOKEN],
-                  deviceDetail: value[DEVICE_DETAIL]));
-            });
+            if (tokens[LIST] != null) {
+              Map<String, dynamic>.from(tokens[LIST]).forEach((key, value) {
+                this.tokens.add(Token(
+                    id: key,
+                    date: DateTime.fromMillisecondsSinceEpoch(value[DATE]),
+                    token: value[TOKEN],
+                    deviceDetail: value[DEVICE_DETAIL]));
+              });
+            }
 
             Token? mToken;
             if (deviceTokens != null) {
