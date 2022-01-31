@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:pr2/models/past_sensor_data.dart';
@@ -8,10 +10,22 @@ import 'sensor_value_format_helper.dart';
 import 'sensor_value_spot.dart';
 
 class DaySummaryLineChart extends StatefulWidget {
-  const DaySummaryLineChart({Key? key, required this.hourlyData})
-      : super(key: key);
+  DaySummaryLineChart({Key? key, required this.hourlyData}) : super(key: key) {
+    try {
+      if (Platform.isAndroid) {
+        android = true;
+      } else {
+        android = false;
+      }
+      // ignore: empty_catches
+    } catch (e) {
+      android = false;
+    }
+  }
 
   final List<PastSensorData> hourlyData;
+
+  late final bool android;
 
   @override
   State<StatefulWidget> createState() => _DaySummaryLineChartState();
@@ -64,7 +78,7 @@ class _DaySummaryLineChartState extends State<DaySummaryLineChart> {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 2 / 1,
+      aspectRatio: widget.android ? (2 / 1) : (5 / 1),
       child: Stack(
         children: <Widget>[
           Padding(
