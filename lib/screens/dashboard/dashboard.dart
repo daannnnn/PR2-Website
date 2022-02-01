@@ -4,11 +4,11 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:intl/intl.dart';
 import 'package:pr2/constants.dart';
 import 'package:pr2/models/current.dart';
 import 'package:pr2/models/current_stream_publisher.dart';
@@ -21,6 +21,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../notification.dart';
 import 'past_data_summary.dart';
 import 'realtime_data.dart';
+import 'package:universal_html/html.dart' as html;
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key, required this.title}) : super(key: key);
@@ -105,6 +106,29 @@ class _DashboardState extends State<Dashboard> {
       backgroundColor: const Color(0xFFF8F9FB),
       appBar: AppBar(
         actions: [
+          if (kIsWeb)
+            TextButton(
+              onPressed: () async {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                          content: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [CircularProgressIndicator()],
+                      ));
+                    });
+                final downloadURL = await FirebaseStorage.instance
+                    .ref(apkFileName)
+                    .getDownloadURL();
+                Navigator.pop(context);
+                html.AnchorElement anchorElement =
+                    html.AnchorElement(href: downloadURL);
+                anchorElement.download = downloadURL;
+                anchorElement.click();
+              },
+              child: const Text('Download APK'),
+            ),
           IconButton(
             onPressed: () async {
               setState(() {
