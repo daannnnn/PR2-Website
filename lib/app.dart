@@ -26,7 +26,7 @@ class App extends StatelessWidget {
             value: AuthService().user,
             initialData: null,
             child: MaterialApp(
-              title: 'PR2',
+              title: 'TECHFRO',
               theme: ThemeData(
                 primarySwatch: Colors.green,
                 fontFamily: 'SourceSansPro',
