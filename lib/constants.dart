@@ -1,6 +1,6 @@
 // ignore_for_file: constant_identifier_names
 
-const apkFileName = 'TECHFRO v1.0';
+const apkFileName = 'TECHFRO v1.0.apk';
 
 const String DATA = 'data';
 
