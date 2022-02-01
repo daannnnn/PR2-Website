@@ -16,7 +16,7 @@ class Wrapper extends StatelessWidget {
     } else if (userState.user == null) {
       return const Authenticate();
     } else {
-      return const Dashboard(title: "PR2");
+      return const Dashboard(title: "TECHFRO");
     }
   }
 }
