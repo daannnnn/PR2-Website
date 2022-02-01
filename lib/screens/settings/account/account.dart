@@ -25,12 +25,12 @@ class _AccountState extends State<Account> {
   bool isScrolledToTop = true;
 
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  final user = FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {
     super.initState();
 
-    final user = FirebaseAuth.instance.currentUser;
     baseDatabaseRef = FirebaseDatabase.instance
         .reference()
         .child((user?.uid ?? '') + '/' + DATA);
@@ -85,7 +85,7 @@ class _AccountState extends State<Account> {
                 style: Theme.of(context).textTheme.overline,
               ),
               Text(
-                Provider.of<User?>(context)?.email ?? '',
+                user?.email ?? '',
                 style: Theme.of(context).textTheme.bodyText1,
               ),
               const SizedBox(height: 16.0),
