@@ -110,6 +110,9 @@ class _SignInState extends State<SignIn> {
 
                             Navigator.pop(context);
 
+                            await Future.delayed(
+                                const Duration(milliseconds: 500));
+
                             if (user == null) {
                               showDialog(
                                   context: context,
