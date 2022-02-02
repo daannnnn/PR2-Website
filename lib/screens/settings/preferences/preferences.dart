@@ -163,17 +163,17 @@ class _PreferencesState extends State<Preferences> {
                   AnimatedSize(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.linearToEaseOut,
-                    child: (updateTime < deviceLastUpdateTime) ||
-                            (updateInterval == deviceUpdateInterval)
-                        ? PreferencesUpdatedCard(
-                            updateInterval: deviceUpdateInterval)
-                        : PreferencesPendingUpdateCard(
+                    child: (updateTime > deviceLastUpdateTime) ||
+                            (updateInterval != deviceUpdateInterval)
+                        ? PreferencesPendingUpdateCard(
                             deviceLastUpdateTime:
                                 DateTime.fromMillisecondsSinceEpoch(
                                     deviceLastUpdateTime),
                             currentUpdateInterval: deviceUpdateInterval,
                             pendingUpdateInterval: updateInterval,
-                          ),
+                          )
+                        : PreferencesUpdatedCard(
+                            updateInterval: deviceUpdateInterval),
                   ),
                   const SizedBox(height: 24.0),
                   Text(

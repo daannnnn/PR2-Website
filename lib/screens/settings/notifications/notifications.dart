@@ -175,18 +175,18 @@ class _NotificationsState extends State<Notifications> {
                         AnimatedSize(
                           duration: const Duration(milliseconds: 300),
                           curve: Curves.linearToEaseOut,
-                          child: (updateTime < deviceLastUpdateTime) ||
-                                  (sendNotifications == deviceSendNotifications)
-                              ? NotificationsUpdatedCard(
-                                  sendNotifications: deviceSendNotifications,
-                                )
-                              : NotificationsPendingUpdateCard(
+                          child: (updateTime > deviceLastUpdateTime) ||
+                                  (sendNotifications != deviceSendNotifications)
+                              ? NotificationsPendingUpdateCard(
                                   deviceLastUpdateTime:
                                       DateTime.fromMillisecondsSinceEpoch(
                                           deviceLastUpdateTime),
                                   currentSendNotifications:
                                       deviceSendNotifications,
                                   pendingSendNotifications: sendNotifications,
+                                )
+                              : NotificationsUpdatedCard(
+                                  sendNotifications: deviceSendNotifications,
                                 ),
                         ),
                         const SizedBox(height: 24.0),
