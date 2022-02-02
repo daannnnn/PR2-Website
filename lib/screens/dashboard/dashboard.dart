@@ -92,9 +92,7 @@ class _DashboardState extends State<Dashboard> {
 
     try {
       if (Platform.isAndroid) {
-        FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-          showNotification(generateNewId(), message);
-        });
+        setFirebaseMessagingListener();
       }
       // ignore: empty_catches
     } catch (e) {}
@@ -219,6 +217,13 @@ class _DashboardState extends State<Dashboard> {
       currentStream = null;
     });
     super.dispose();
+  }
+
+  void setFirebaseMessagingListener() async {
+    await FirebaseMessaging.instance.getToken();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      showNotification(generateNewId(), message);
+    });
   }
 
   Future<void> _createNotificationChannel(String id, String name) async {
