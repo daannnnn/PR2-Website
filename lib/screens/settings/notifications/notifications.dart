@@ -272,8 +272,6 @@ class _NotificationsState extends State<Notifications> {
                       padding: const EdgeInsets.only(left: 16.0),
                       itemCount: deviceTokens.length,
                       itemBuilder: (context, index) {
-                        final int i = tokens.indexWhere(
-                            (element) => element.id == deviceTokens[index].id);
                         return Padding(
                           padding: const EdgeInsets.only(
                             top: 12.0,
@@ -294,9 +292,7 @@ class _NotificationsState extends State<Notifications> {
                                               .primary),
                                 ),
                               Text(
-                                (i != -1)
-                                    ? tokens[i].deviceDetail ?? 'NA'
-                                    : 'NA',
+                                deviceTokens[index].deviceDetail ?? 'NA',
                                 style: Theme.of(context).textTheme.subtitle2,
                               )
                             ],
