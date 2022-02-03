@@ -16,7 +16,6 @@ import 'package:pr2/screens/notification/alerts/alerts.dart';
 import 'package:pr2/screens/notification/notification_list.dart';
 import 'package:pr2/screens/past_data/past_data.dart';
 import 'package:pr2/screens/settings/settings.dart';
-import 'package:pr2/services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../notification.dart';
 import 'past_data_summary.dart';
@@ -34,7 +33,6 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   late DatabaseReference baseDatabaseRef;
-  final AuthService _auth = AuthService();
 
   late ScrollController scrollController;
   bool isScrolledToTop = true;
@@ -132,8 +130,8 @@ class _DashboardState extends State<Dashboard> {
               setState(() {
                 currentStream = null;
               });
-              await Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Settings()));
+              await Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Settings()));
               setState(() {
                 currentStream =
                     CurrentStreamPublisher().getCurrentStream(baseDatabaseRef);
@@ -156,7 +154,7 @@ class _DashboardState extends State<Dashboard> {
             children: [
               RealtimeData(
                 stream: currentStream,
-                intervalSeconds: 2, // TODO: Retrieve from database
+                intervalSeconds: 2,
                 pastMinuteValueToShow: kIsWeb ? 5 : 1,
                 goToNotifications: () async {
                   setState(() {
@@ -195,7 +193,6 @@ class _DashboardState extends State<Dashboard> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => const PastData()));
-                  // TODO: Check if element already exists.
                   setState(() {
                     currentStream = CurrentStreamPublisher()
                         .getCurrentStream(baseDatabaseRef);
@@ -213,9 +210,12 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   void dispose() {
-    setState(() {
-      currentStream = null;
-    });
+    try {
+      setState(() {
+        currentStream = null;
+      });
+      // ignore: empty_catches
+    } catch (e) {}
     super.dispose();
   }
 
@@ -283,11 +283,6 @@ class _DashboardState extends State<Dashboard> {
     return prefs.getString('fcmTokenKey');
   }
 
-  Future<void> _removeTokenKey() async {
-    final SharedPreferences prefs = await _prefs;
-    await prefs.remove('fcmTokenKey');
-  }
-
   Future<void> _saveLastTokenRefreshTime() async {
     final SharedPreferences prefs = await _prefs;
     await prefs.setInt(
@@ -297,10 +292,5 @@ class _DashboardState extends State<Dashboard> {
   Future<int> _getLastTokenRefreshTime() async {
     final SharedPreferences prefs = await _prefs;
     return prefs.getInt('lastTokenRefreshTime') ?? 0;
-  }
-
-  Future<void> _removeLastTokenRefreshTime() async {
-    final SharedPreferences prefs = await _prefs;
-    await prefs.remove('lastTokenRefreshTime');
   }
 }
