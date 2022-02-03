@@ -53,7 +53,7 @@ class _DashboardState extends State<Dashboard> {
         .child((user?.uid ?? '') + '/' + DATA);
 
     try {
-      if (Platform.isAndroid) {
+      if (Platform.isAndroid && !kIsWeb) {
         SchedulerBinding.instance
             ?.addPostFrameCallback((_) => handleFCMToken());
       }
